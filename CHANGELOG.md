@@ -7,6 +7,71 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2025-11-26
+
+### 🎉 版本亮点
+
+本版本为 CC-Switch-Web 项目的首个重大更新，整合了多项安全增强、跨平台兼容性修复和开发者体验改进。
+
+### ✨ New Features
+
+#### Linux 一键启动脚本
+- **新增 `scripts/install.sh`**：自动选择架构（x86_64/aarch64）下载 release 资产
+- 支持可选 SHA256 校验，保障安装安全
+- 可安装到用户目录 (`~/.local/bin`) 或系统目录 (`/usr/local/bin`)
+- 自动生成 `.desktop` 文件与应用图标
+
+#### GitHub Actions CI 工作流
+- **三平台自动化测试**：Ubuntu、Windows、macOS
+- 自动触发 PR 构建与测试
+- 支持 `fix/*` 分支测试触发
+
+### 🔒 Security Enhancements
+
+#### JS 沙箱与 Web API 安全增强
+- **JavaScript 沙箱隔离**：`rquickjs` 执行环境限制，防止恶意脚本执行
+- **API 安全增强**：添加速率限制、请求验证和输入过滤
+- **Windows Web 模式安全改进**：修复跨平台安全隐患
+
+#### 原子写入与 unwrap 安全化
+- **配置文件原子写入**：防止写入中断导致的配置损坏
+- **消除 `unwrap()` 调用**：使用安全的 `?` 操作符和 `match` 模式，避免 panic
+- **错误传播改进**：使用 `thiserror` 提供清晰的错误信息
+
+### 🔧 Improvements
+
+#### 跨平台兼容性修复
+- **macOS**：修复 Tauri 2.x API 变更导致的编译错误（`window.ns_window()` 返回类型从 `Option` 变为 `Result`）
+- **Windows CI**：添加 `dist-web` 占位目录，修复 RustEmbed 在 CI 环境下的编译错误
+- **Windows 测试隔离**：新增 `get_home_dir()` 函数，优先检查 `HOME`/`USERPROFILE` 环境变量
+
+#### Rust 版本与依赖调整
+- **Axum 0.7 完整迁移**：完成 Web API 框架升级
+- **依赖更新**：更新 Cargo.lock 至最新稳定版本
+- **Rust edition**：明确指定 2021 edition 和 rust-version 1.83.0
+
+### 🐛 Bug Fixes
+
+#### 测试修复
+- 修复 4 个 `app_config` 测试因 `dirs::home_dir()` 在 Windows 上忽略环境变量而失败的问题
+- UsageFooter 补充 `backupProviderId` / `onAutoFailover` 入参类型，恢复自动故障切换渲染与类型检查
+
+#### 配置管理修复
+- 非 Windows 平台删除 system 环境变量时改为最佳努力移除当前进程变量
+- MCP：统一读取旧分应用结构的启用项，切换 Codex 供应商时同步到 `config.toml`
+
+### 📦 Technical Details
+
+- **项目重命名**：更新为 CC-Switch-Web
+- **文档更新**：添加 Web 截图和维护说明
+- **依赖审计**：确保所有依赖版本安全
+
+### 📝 Statistics
+
+- **总提交数**：11 commits (from v0.1.0 to v0.2.0)
+- **主要变更文件**：43 files changed
+- **代码行数**：约 +1,500 insertions, -300 deletions
+
 ## [0.1.1] - 2025-11-25
 
 ### Added

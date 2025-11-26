@@ -8,6 +8,13 @@ repository = "https://github.com/farion1231/cc-switch"
 edition = "2021"
 rust-version = "1.83.0"
 default-run = "cc-switch"
+# 禁用自动 bin 检测，防止 Tauri 打包 cc-switch-server（需要 web-server feature）
+autobins = false
+
+# 主二进制（Tauri 桌面应用）
+[[bin]]
+name = "cc-switch"
+path = "src/main.rs"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

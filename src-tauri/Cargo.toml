@@ -88,7 +88,9 @@ strip = "symbols"
 serial_test = "3"
 tempfile = "3"
 
-[[bin]]
-name = "cc-switch-server"
-path = "src/bin/server.rs"
+# Web Server 作为 example 构建，避免 Tauri 打包
+# 运行方式：cargo run --example server --features web-server
+[[example]]
+name = "server"
+path = "examples/server.rs"
 required-features = ["web-server"]

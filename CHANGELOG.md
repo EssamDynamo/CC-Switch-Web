@@ -72,6 +72,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **主要变更文件**：43 files changed
 - **代码行数**：约 +1,500 insertions, -300 deletions
 
+### 🔧 Release Engineering Fixes (by LITLAY2004)
+
+本次发布过程中修复了多个 CI/CD 和签名相关问题：
+
+#### Tauri 签名密钥兼容性
+- **scrypt 参数过高**：Minisign 生成的密钥 scrypt 参数超出 Tauri 支持范围，改用 `tauri signer generate --ci --password` 生成兼容密钥
+- **GitHub Secret 空格问题**：Actions 变量展开会引入空格（ASCII 32），使用 `env:` 块配合 `tr -d ' \r\n'` 清理空白字符
+- **密码环境变量**：`--ci` 标志仍生成加密密钥，需同时配置 `TAURI_SIGNING_PRIVATE_KEY` 和 `TAURI_SIGNING_PRIVATE_KEY_PASSWORD`
+
+#### CI 工作流修复
+- **Cargo target 类型**：`cc-switch-server` 从 `[[bin]]` 移至 `[[example]]` 后，CI 需使用 `--example server` 替代 `--bin cc-switch-server`
+
+#### 公钥格式修复
+- **完整 base64 编码**：`tauri.conf.json` 中的 `pubkey` 需包含完整内容（含 `untrusted comment` 行），而非仅第二行
+
 ## [0.1.1] - 2025-11-25
 
 ### Added

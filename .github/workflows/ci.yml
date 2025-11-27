@@ -48,7 +48,7 @@ jobs:
           echo '<!DOCTYPE html><html><head><title>placeholder</title></head><body></body></html>' > dist-web/index.html
 
       - name: Check (web-server)
-        run: cargo check --manifest-path src-tauri/Cargo.toml --features web-server --bin cc-switch-server
+        run: cargo check --manifest-path src-tauri/Cargo.toml --features web-server --example server
 
       - name: Test
         run: cargo test --manifest-path src-tauri/Cargo.toml --lib

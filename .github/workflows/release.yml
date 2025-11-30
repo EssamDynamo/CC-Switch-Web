@@ -319,13 +319,11 @@ jobs:
         with:
           targets: ${{ matrix.target }}
 
-      - name: Install cross-compilation tools (aarch64)
-        if: matrix.target == 'aarch64-unknown-linux-gnu'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y gcc-aarch64-linux-gnu
+      - name: Install cross
+        run: cargo install cross --git https://github.com/cross-rs/cross
 
-      - name: Install build deps
+      - name: Install build deps (native only)
+        if: matrix.target == 'x86_64-unknown-linux-gnu'
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends libssl-dev pkg-config
@@ -333,7 +331,11 @@ jobs:
       - name: Build server binary
         run: |
           cd src-tauri
-          cargo build --release --no-default-features --features web-server --example server --target ${{ matrix.target }}
+          if [ "${{ matrix.target }}" = "x86_64-unknown-linux-gnu" ]; then
+            cargo build --release --no-default-features --features web-server --example server --target ${{ matrix.target }}
+          else
+            cross build --release --no-default-features --features web-server --example server --target ${{ matrix.target }}
+          fi
 
       - name: Prepare artifact
         run: |

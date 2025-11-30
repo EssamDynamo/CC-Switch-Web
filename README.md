@@ -1,5 +1,7 @@
 # CC-Switch-Web — Web/Headless Assistant for Claude Code, Codex & Gemini CLI
 
+> **Updated to v0.4.0** — Now with prebuilt server binaries, Docker support, and simplified web deployment. [View Changelog](CHANGELOG.md)
+
 English | [中文](README_ZH.md) | [Changelog](CHANGELOG.md)
 
 This project is a fork of [cc-switch](https://github.com/farion1231/cc-switch) by farion1231. We sincerely thank the original author for creating such an excellent foundation. Without the upstream project's pioneering work, CC-Switch-Web would not exist.

@@ -330,11 +330,12 @@ jobs:
 
       - name: Build server binary
         run: |
-          cd src-tauri
           if [ "${{ matrix.target }}" = "x86_64-unknown-linux-gnu" ]; then
+            cd src-tauri
             cargo build --release --no-default-features --features web-server --example server --target ${{ matrix.target }}
           else
-            cross build --release --no-default-features --features web-server --example server --target ${{ matrix.target }}
+            # cross 从项目根目录运行，确保 dist-web 目录在容器内可访问
+            cross build --release --no-default-features --features web-server --example server --target ${{ matrix.target }} --manifest-path src-tauri/Cargo.toml
           fi
 
       - name: Prepare artifact

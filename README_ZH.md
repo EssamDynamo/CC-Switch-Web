@@ -80,6 +80,16 @@ CREATE_SERVICE=1 curl -fsSL https://raw.githubusercontent.com/LITLAY2004/CC-Swit
 ```
 
 **Docker 容器部署（新增）**：
+- 直接拉取并运行 GHCR 镜像（一行启动）：
+```bash
+docker run -p 3000:3000 ghcr.io/laliet/cc-switch-web:latest
+```
+- 使用一键部署脚本（自定义端口/版本/数据目录、可后台运行）：
+```bash
+# 在仓库根目录
+./scripts/docker-deploy.sh -p 8080 --data-dir /opt/cc-switch-data -d
+```
+- 本地构建镜像（可选）：
 ```bash
 docker build -t cc-switch-web .
 docker run -p 3000:3000 cc-switch-web

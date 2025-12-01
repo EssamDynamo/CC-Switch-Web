@@ -80,6 +80,16 @@ CREATE_SERVICE=1 curl -fsSL https://raw.githubusercontent.com/LITLAY2004/CC-Swit
 ```
 
 **Docker container (new)**:
+- Pull and run the prebuilt image (one line):
+```bash
+docker run -p 3000:3000 ghcr.io/laliet/cc-switch-web:latest
+```
+- Use the one-click deploy script (custom port/version/data dir/background):
+```bash
+# from repo root
+./scripts/docker-deploy.sh -p 8080 --data-dir /opt/cc-switch-data -d
+```
+- Build locally (optional):
 ```bash
 docker build -t cc-switch-web .
 docker run -p 3000:3000 cc-switch-web

@@ -1,12 +1,57 @@
-# CC-Switch-Web — Claude Code / Codex / Gemini CLI 配置管理工具
+# CC-Switch-Web
 
-> **已更新至 v0.4.1** — 新增预编译 server binary、Docker 支持、简化 Web 部署流程。[查看更新日志](CHANGELOG.md)
+[![Release](https://img.shields.io/github/v/release/Laliet/CC-Switch-Web?style=flat-square&logo=github&label=Release)](https://github.com/Laliet/CC-Switch-Web/releases/latest)
+[![License](https://img.shields.io/github/license/Laliet/CC-Switch-Web?style=flat-square)](LICENSE)
+[![Windows](https://img.shields.io/badge/Windows-0078D6?style=flat-square&logo=windows&logoColor=white)](https://github.com/Laliet/CC-Switch-Web/releases/latest)
+[![macOS](https://img.shields.io/badge/macOS-000000?style=flat-square&logo=apple&logoColor=white)](https://github.com/Laliet/CC-Switch-Web/releases/latest)
+[![Linux](https://img.shields.io/badge/Linux-FCC624?style=flat-square&logo=linux&logoColor=black)](https://github.com/Laliet/CC-Switch-Web/releases/latest)
+[![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker&logoColor=white)](https://github.com/Laliet/CC-Switch-Web/pkgs/container/cc-switch-web)
+
+**Claude Code / Codex / Gemini CLI 一站式配置管理助手**
 
 [English](README.md) | 中文 | [更新日志](CHANGELOG.md)
 
-本项目基于 [cc-switch](https://github.com/farion1231/cc-switch) 二次开发。衷心感谢原作者 farion1231 创建了如此优秀的开源项目，为本项目奠定了坚实基础。没有上游项目的开拓性工作，就不会有 CC-Switch-Web 的诞生。
+---
 
-CC-Switch-Web 是一个统一的 AI CLI 配置管理工具，支持 **Claude Code**、**Codex** 和 **Gemini CLI**。提供桌面应用和 Web 服务器两种运行模式，用于管理 AI 供应商、MCP 服务器、技能和系统提示词。
+## 项目简介
+
+**CC-Switch-Web** 是一个统一的 AI CLI 配置管理工具，支持 **Claude Code**、**Codex** 和 **Gemini CLI**。提供桌面应用和 Web 服务器两种运行模式，用于管理 AI 供应商、MCP 服务器、技能和系统提示词。
+
+无论你是在本地开发还是在无图形界面的云端环境，CC-Switch-Web 都能提供流畅的体验：
+
+- 🔄 **一键切换供应商** — 支持 OpenAI 兼容 API 端点
+- 🔌 **统一 MCP 管理** — 跨 Claude/Codex/Gemini 三大 CLI 工具
+- 📦 **技能市场** — 从 GitHub 浏览并安装 Claude 技能
+- 📝 **提示词编辑器** — 内置语法高亮
+- 💾 **配置备份/恢复** — 支持版本历史
+- 🌐 **Web 服务器模式** — 支持 Basic Auth，适用于云端/无头部署
+
+---
+
+## v0.4.2 更新内容
+
+### 🔒 安全修复
+- 修复 Windows `atomic_write` 命令注入漏洞
+- 修复技能安装时的 ZIP 路径遍历漏洞
+
+### 🐛 Bug 修复
+- **修复 Web 版本无法显示已安装 MCP 的问题** — 自动导入 Claude/Codex/Gemini 外部配置
+- 修复 `import_from_codex` 遇到未知类型时提前退出的问题
+- 修复 MCP 管理面板查询失败时显示空列表的问题
+
+### 🖥️ 跨平台兼容
+- Windows 命令验证现在正确处理 PATHEXT/.exe
+- 修复 `skills_path` 路径分隔符在 Windows 上的问题
+
+### ✨ 功能增强
+- MCP 管理面板添加操作防抖和 loading 状态
+- 新增 `useSkills` React Query hooks
+
+### 🧪 测试与 CI
+- 新增完整的后端和前端测试
+- GitHub Actions 新增前端测试和集成测试 job
+
+---
 
 ## 功能特性
 
@@ -18,6 +63,8 @@ CC-Switch-Web 是一个统一的 AI CLI 配置管理工具，支持 **Claude Cod
 - **导入/导出**：备份和恢复所有配置，支持版本历史
 - **跨平台**：支持 Windows、macOS、Linux（桌面版）和 Web/Docker（服务器版）
 
+---
+
 ## 快速开始
 
 ### 方式一：桌面应用（GUI）
@@ -26,11 +73,11 @@ CC-Switch-Web 是一个统一的 AI CLI 配置管理工具，支持 **Claude Cod
 
 | 平台 | 下载链接 | 说明 |
 |------|----------|------|
-| **Windows** | [CC-Switch-v0.4.0-Windows.msi](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.4.0/CC-Switch-v0.4.0-Windows.msi) | 安装版（推荐） |
-| | [CC-Switch-v0.4.0-Windows-Portable.zip](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.4.0/CC-Switch-v0.4.0-Windows-Portable.zip) | 绿色版（免安装） |
-| **macOS** | [CC-Switch-v0.4.0-macOS.zip](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.4.0/CC-Switch-v0.4.0-macOS.zip) | 通用二进制（Intel + Apple Silicon） |
-| **Linux** | [CC-Switch-v0.4.0-Linux.AppImage](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.4.0/CC-Switch-v0.4.0-Linux.AppImage) | AppImage（通用） |
-| | [CC-Switch-v0.4.0-Linux.deb](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.4.0/CC-Switch-v0.4.0-Linux.deb) | Debian/Ubuntu 包 |
+| **Windows** | [CC-Switch-v0.4.2-Windows.msi](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.4.2/CC-Switch-v0.4.2-Windows.msi) | 安装版（推荐） |
+| | [CC-Switch-v0.4.2-Windows-Portable.zip](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.4.2/CC-Switch-v0.4.2-Windows-Portable.zip) | 绿色版（免安装） |
+| **macOS** | [CC-Switch-v0.4.2-macOS.zip](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.4.2/CC-Switch-v0.4.2-macOS.zip) | 通用二进制（Intel + Apple Silicon） |
+| **Linux** | [CC-Switch-v0.4.2-Linux.AppImage](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.4.2/CC-Switch-v0.4.2-Linux.AppImage) | AppImage（通用） |
+| | [CC-Switch-v0.4.2-Linux.deb](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.4.2/CC-Switch-v0.4.2-Linux.deb) | Debian/Ubuntu 包 |
 
 **macOS 提示**：如遇"已损坏"警告，在终端执行：`xattr -cr "/Applications/CC Switch.app"`
 
@@ -52,7 +99,7 @@ curl -fsSL https://raw.githubusercontent.com/Laliet/CC-Switch-Web/main/scripts/i
 **高级选项**：
 ```bash
 # 安装指定版本
-VERSION=v0.4.0 curl -fsSL https://...install.sh | bash
+VERSION=v0.4.2 curl -fsSL https://...install.sh | bash
 
 # 跳过校验
 NO_CHECKSUM=1 curl -fsSL https://...install.sh | bash
@@ -68,8 +115,8 @@ NO_CHECKSUM=1 curl -fsSL https://...install.sh | bash
 
 | 架构 | 下载链接 |
 |------|----------|
-| **Linux x86_64** | [cc-switch-server-linux-x86_64](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.4.0/cc-switch-server-linux-x86_64) |
-| **Linux aarch64** | [cc-switch-server-linux-aarch64](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.4.0/cc-switch-server-linux-aarch64) |
+| **Linux x86_64** | [cc-switch-server-linux-x86_64](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.4.2/cc-switch-server-linux-x86_64) |
+| **Linux aarch64** | [cc-switch-server-linux-aarch64](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.4.2/cc-switch-server-linux-aarch64) |
 
 **一键部署**：
 ```bash
@@ -131,6 +178,8 @@ HOST=0.0.0.0 PORT=3000 ./target/release/examples/server
 - **跨域设置**：默认同源；需跨域请设置 `CORS_ALLOW_ORIGINS=https://your-domain.com`
 - **注意**：Web 模式不支持原生文件选择器，请手动输入路径
 
+---
+
 ## 使用指南
 
 ### 1. 添加供应商
@@ -175,6 +224,8 @@ HOST=0.0.0.0 PORT=3000 ./target/release/examples/server
    - Codex: `~/.codex/AGENTS.md`
    - Gemini: `~/.gemini/GEMINI.md`
 
+---
+
 ## 配置文件
 
 CC-Switch 管理以下配置文件：
@@ -187,11 +238,15 @@ CC-Switch 管理以下配置文件：
 
 CC-Switch 自身配置：`~/.cc-switch/config.json`
 
+---
+
 ## 截图
 
 | 技能市场 | 提示词编辑 | 高级设置 |
 | :--: | :--: | :--: |
 | ![Skills](assets/screenshots/web-skills.png) | ![Prompt](assets/screenshots/web-prompt.png) | ![Settings](assets/screenshots/web-settings.png) |
+
+---
 
 ## 开发
 
@@ -215,19 +270,29 @@ pnpm build:web
 pnpm test
 ```
 
+---
+
 ## 技术栈
 
 - **前端**：React 18、TypeScript、Vite、Tailwind CSS、TanStack Query、Radix UI、CodeMirror
 - **后端**：Rust、Tauri 2.x、Axum（Web 服务器模式）、tower-http
 - **工具链**：pnpm、Vitest、MSW
 
+---
+
 ## 更新日志
 
-参见 [CHANGELOG.md](CHANGELOG.md) — 当前版本：**v0.4.1**
+参见 [CHANGELOG.md](CHANGELOG.md) — 当前版本：**v0.4.2**
+
+---
 
 ## 致谢
 
-本项目基于 Jason Young (farion1231) 的开源项目 **cc-switch** 二次开发。上游 Tauri 桌面应用统一了供应商切换、MCP 管理、技能和提示词功能，具备完善的国际化和安全特性。CC-Switch-Web 在此基础上增加了 Web/服务器运行模式、CORS 控制、Basic Auth、更多模板，以及云端/无头部署文档。
+本项目基于 Jason Young (farion1231) 的开源项目 **[cc-switch](https://github.com/farion1231/cc-switch)** 二次开发。衷心感谢原作者创建了如此优秀的开源项目，为本项目奠定了坚实基础。没有上游项目的开拓性工作，就不会有 CC-Switch-Web 的诞生。
+
+上游 Tauri 桌面应用统一了供应商切换、MCP 管理、技能和提示词功能，具备完善的国际化和安全特性。CC-Switch-Web 在此基础上增加了 Web/服务器运行模式、CORS 控制、Basic Auth、更多模板，以及云端/无头部署文档。
+
+---
 
 ## 许可证
 

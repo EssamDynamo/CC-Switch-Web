@@ -25,7 +25,12 @@ export function isWeb(): boolean {
   if (import.meta.env?.VITE_MODE === "web") {
     return true;
   }
-  return typeof window === "undefined" || !(window as any).__TAURI__;
+  if (typeof window === "undefined") {
+    return true;
+  }
+
+  const tauriGlobal = (window as any).__TAURI__ || (window as any).__TAURI_INTERNALS__;
+  return !tauriGlobal;
 }
 
 declare global {

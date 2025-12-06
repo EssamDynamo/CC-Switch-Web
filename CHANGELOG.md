@@ -5,6 +5,15 @@ All notable changes to CC Switch will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.3] - 2025-12-06
+
+### 🐛 Bug Fixes / Bug 修复
+- **Fix blank window on macOS Sequoia (15.x)** / **修复 macOS Sequoia (15.x) 上应用窗口空白的问题**
+  - Enable `withGlobalTauri` to inject `__TAURI__` global on macOS WebKit / 启用 `withGlobalTauri` 以在 macOS WebKit 上注入 `__TAURI__` 全局对象
+  - Expand `assetProtocol.scope` from `[]` to `["**"]` to allow resource loading / 将 `assetProtocol.scope` 从 `[]` 扩展为 `["**"]` 以允许资源加载
+  - Update CSP to include `asset:` and `tauri:` schemes / 更新 CSP 以包含 `asset:` 和 `tauri:` 协议
+  - Improve Tauri runtime detection to check both `__TAURI__` and `__TAURI_INTERNALS__` / 改进 Tauri 运行时检测，同时检查 `__TAURI__` 和 `__TAURI_INTERNALS__`
+
 ## [0.4.2] - 2025-12-06
 
 ### 🔒 Security / 安全修复

@@ -5,6 +5,12 @@ All notable changes to CC Switch will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.4] - 2025-12-07
+
+### 🐛 Bug Fixes / Bug 修复
+- Fix Windows test failure in `app_config` tests / 修复 Windows 上 app_config 测试失败
+  - Reset app_store override and settings cache when TempHome changes / TempHome 变更时重置缓存路径
+
 ## [0.4.3] - 2025-12-06
 
 ### 🐛 Bug Fixes / Bug 修复

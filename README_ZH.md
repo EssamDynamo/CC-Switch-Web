@@ -28,14 +28,14 @@
 
 ---
 
-## v0.4.3 更新内容
+## v0.4.4 更新内容
 
 ### 🐛 Bug 修复
 - **修复 macOS Sequoia (15.x) 上应用窗口空白的问题** — 启用 `withGlobalTauri`、扩展资源协议范围、更新 CSP、改进 Tauri 运行时检测
 
 ---
 
-## v0.4.3 更新内容
+## v0.4.4 更新内容
 
 ### 🔒 安全修复
 - 修复 Windows `atomic_write` 命令注入漏洞
@@ -80,11 +80,11 @@
 
 | 平台 | 下载链接 | 说明 |
 |------|----------|------|
-| **Windows** | [CC-Switch-v0.4.3-Windows.msi](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.4.3/CC-Switch-v0.4.3-Windows.msi) | 安装版（推荐） |
-| | [CC-Switch-v0.4.3-Windows-Portable.zip](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.4.3/CC-Switch-v0.4.3-Windows-Portable.zip) | 绿色版（免安装） |
-| **macOS** | [CC-Switch-v0.4.3-macOS.zip](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.4.3/CC-Switch-v0.4.3-macOS.zip) | 通用二进制（Intel + Apple Silicon） |
-| **Linux** | [CC-Switch-v0.4.3-Linux.AppImage](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.4.3/CC-Switch-v0.4.3-Linux.AppImage) | AppImage（通用） |
-| | [CC-Switch-v0.4.3-Linux.deb](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.4.3/CC-Switch-v0.4.3-Linux.deb) | Debian/Ubuntu 包 |
+| **Windows** | [CC-Switch-v0.4.4-Windows.msi](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.4.4/CC-Switch-v0.4.4-Windows.msi) | 安装版（推荐） |
+| | [CC-Switch-v0.4.4-Windows-Portable.zip](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.4.4/CC-Switch-v0.4.4-Windows-Portable.zip) | 绿色版（免安装） |
+| **macOS** | [CC-Switch-v0.4.4-macOS.zip](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.4.4/CC-Switch-v0.4.4-macOS.zip) | 通用二进制（Intel + Apple Silicon） |
+| **Linux** | [CC-Switch-v0.4.4-Linux.AppImage](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.4.4/CC-Switch-v0.4.4-Linux.AppImage) | AppImage（通用） |
+| | [CC-Switch-v0.4.4-Linux.deb](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.4.4/CC-Switch-v0.4.4-Linux.deb) | Debian/Ubuntu 包 |
 
 **macOS 提示**：如遇"已损坏"警告，在终端执行：`xattr -cr "/Applications/CC Switch.app"`
 
@@ -106,7 +106,7 @@ curl -fsSL https://raw.githubusercontent.com/Laliet/CC-Switch-Web/main/scripts/i
 **高级选项**：
 ```bash
 # 安装指定版本
-VERSION=v0.4.3 curl -fsSL https://...install.sh | bash
+VERSION=v0.4.4 curl -fsSL https://...install.sh | bash
 
 # 跳过校验
 NO_CHECKSUM=1 curl -fsSL https://...install.sh | bash
@@ -122,8 +122,8 @@ NO_CHECKSUM=1 curl -fsSL https://...install.sh | bash
 
 | 架构 | 下载链接 |
 |------|----------|
-| **Linux x86_64** | [cc-switch-server-linux-x86_64](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.4.3/cc-switch-server-linux-x86_64) |
-| **Linux aarch64** | [cc-switch-server-linux-aarch64](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.4.3/cc-switch-server-linux-aarch64) |
+| **Linux x86_64** | [cc-switch-server-linux-x86_64](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.4.4/cc-switch-server-linux-x86_64) |
+| **Linux aarch64** | [cc-switch-server-linux-aarch64](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.4.4/cc-switch-server-linux-aarch64) |
 
 **一键部署**：
 ```bash
@@ -289,7 +289,7 @@ pnpm test
 
 ## 更新日志
 
-参见 [CHANGELOG.md](CHANGELOG.md) — 当前版本：**v0.4.3**
+参见 [CHANGELOG.md](CHANGELOG.md) — 当前版本：**v0.4.4**
 
 ---
 

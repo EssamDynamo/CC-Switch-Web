@@ -28,14 +28,14 @@ Whether you're working locally or in a headless cloud environment, CC-Switch-Web
 
 ---
 
-## What's New in v0.4.3
+## What's New in v0.4.4
 
 ### 🐛 Bug Fixes
 - **Fix blank window on macOS Sequoia (15.x)** — Enable `withGlobalTauri`, expand asset protocol scope, update CSP, and improve Tauri runtime detection
 
 ---
 
-## What's New in v0.4.3
+## What's New in v0.4.4
 
 ### 🔒 Security
 - Fix Windows `atomic_write` command injection vulnerability
@@ -80,11 +80,11 @@ Full-featured desktop app with graphical interface, built with Tauri.
 
 | Platform | Download | Description |
 |----------|----------|-------------|
-| **Windows** | [CC-Switch-v0.4.3-Windows.msi](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.4.3/CC-Switch-v0.4.3-Windows.msi) | Installer (recommended) |
-| | [CC-Switch-v0.4.3-Windows-Portable.zip](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.4.3/CC-Switch-v0.4.3-Windows-Portable.zip) | Portable (no install) |
-| **macOS** | [CC-Switch-v0.4.3-macOS.zip](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.4.3/CC-Switch-v0.4.3-macOS.zip) | Universal binary (Intel + Apple Silicon) |
-| **Linux** | [CC-Switch-v0.4.3-Linux.AppImage](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.4.3/CC-Switch-v0.4.3-Linux.AppImage) | AppImage (universal) |
-| | [CC-Switch-v0.4.3-Linux.deb](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.4.3/CC-Switch-v0.4.3-Linux.deb) | Debian/Ubuntu package |
+| **Windows** | [CC-Switch-v0.4.4-Windows.msi](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.4.4/CC-Switch-v0.4.4-Windows.msi) | Installer (recommended) |
+| | [CC-Switch-v0.4.4-Windows-Portable.zip](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.4.4/CC-Switch-v0.4.4-Windows-Portable.zip) | Portable (no install) |
+| **macOS** | [CC-Switch-v0.4.4-macOS.zip](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.4.4/CC-Switch-v0.4.4-macOS.zip) | Universal binary (Intel + Apple Silicon) |
+| **Linux** | [CC-Switch-v0.4.4-Linux.AppImage](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.4.4/CC-Switch-v0.4.4-Linux.AppImage) | AppImage (universal) |
+| | [CC-Switch-v0.4.4-Linux.deb](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.4.4/CC-Switch-v0.4.4-Linux.deb) | Debian/Ubuntu package |
 
 **macOS Note**: If you see "damaged" warning, run: `xattr -cr "/Applications/CC Switch.app"`
 
@@ -106,7 +106,7 @@ This script will:
 **Advanced options**:
 ```bash
 # Install specific version
-VERSION=v0.4.3 curl -fsSL https://...install.sh | bash
+VERSION=v0.4.4 curl -fsSL https://...install.sh | bash
 
 # Skip checksum verification
 NO_CHECKSUM=1 curl -fsSL https://...install.sh | bash
@@ -122,8 +122,8 @@ Download precompiled server binary—no compilation required:
 
 | Architecture | Download |
 |--------------|----------|
-| **Linux x86_64** | [cc-switch-server-linux-x86_64](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.4.3/cc-switch-server-linux-x86_64) |
-| **Linux aarch64** | [cc-switch-server-linux-aarch64](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.4.3/cc-switch-server-linux-aarch64) |
+| **Linux x86_64** | [cc-switch-server-linux-x86_64](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.4.4/cc-switch-server-linux-x86_64) |
+| **Linux aarch64** | [cc-switch-server-linux-aarch64](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.4.4/cc-switch-server-linux-aarch64) |
 
 **One-Line Deploy**:
 ```bash
@@ -289,7 +289,7 @@ pnpm test
 
 ## Changelog
 
-See [CHANGELOG.md](CHANGELOG.md) — Current version: **v0.4.3**
+See [CHANGELOG.md](CHANGELOG.md) — Current version: **v0.4.4**
 
 ---
 

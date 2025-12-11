@@ -45,13 +45,18 @@ export function useImportExport(
   const [isImporting, setIsImporting] = useState(false);
   const successTimerRef = useRef<number | null>(null);
 
+  const clearSuccessTimer = useCallback(() => {
+    if (successTimerRef.current) {
+      window.clearTimeout(successTimerRef.current);
+      successTimerRef.current = null;
+    }
+  }, []);
+
   useEffect(() => {
     return () => {
-      if (successTimerRef.current) {
-        window.clearTimeout(successTimerRef.current);
-      }
+      clearSuccessTimer();
     };
-  }, []);
+  }, [clearSuccessTimer]);
 
   const clearSelection = useCallback(() => {
     setSelectedFile("");
@@ -118,6 +123,7 @@ export function useImportExport(
 
     if (isImporting) return;
 
+    clearSuccessTimer();
     setIsImporting(true);
     setStatus("importing");
     setErrorMessage(null);
@@ -151,6 +157,7 @@ export function useImportExport(
         );
 
         successTimerRef.current = window.setTimeout(() => {
+          successTimerRef.current = null;
           void onImportSuccess?.();
         }, 1500);
       } else {
@@ -181,7 +188,14 @@ export function useImportExport(
     } finally {
       setIsImporting(false);
     }
-  }, [isImporting, onImportSuccess, selectedFile, t]);
+  }, [
+    clearSuccessTimer,
+    isImporting,
+    onImportSuccess,
+    selectedFile,
+    selectedFileContent,
+    t,
+  ]);
 
   const exportConfig = useCallback(async () => {
     if (isWeb()) {

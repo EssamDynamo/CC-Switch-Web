@@ -336,8 +336,50 @@ export interface UpdateTomlCommonConfigResult {
   error?: string;
 }
 
-// 保存之前的通用配置片段，用于替换操作
-let previousCommonSnippet = "";
+const escapeRegExp = (value: string): string =>
+  value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+const cleanupTomlAfterRemoval = (value: string): string => {
+  const cleaned = value.replace(/\n{3,}/g, "\n\n").trim();
+  return cleaned ? `${cleaned}\n` : "";
+};
+
+const finalizeTomlConfig = (value: string): string => {
+  const trimmed = value.trim();
+  return trimmed ? `${trimmed}\n` : "";
+};
+
+const removeTomlCommonConfigSnippet = (
+  tomlString: string,
+  snippetString: string,
+): { updated: string; removed: boolean } => {
+  const trimmedSnippet = snippetString.trim();
+  if (!trimmedSnippet) {
+    return { updated: tomlString, removed: false };
+  }
+
+  const escapedSnippet = escapeRegExp(trimmedSnippet);
+  const escapedRawSnippet = escapeRegExp(snippetString);
+
+  const patterns = [
+    new RegExp(`\\n*${escapedSnippet}\\n*`, "g"),
+    new RegExp(escapedRawSnippet, "g"),
+  ];
+
+  let updated = tomlString;
+  patterns.forEach((pattern) => {
+    updated = updated.replace(pattern, "\n");
+  });
+
+  if (updated === tomlString) {
+    return { updated: tomlString, removed: false };
+  }
+
+  return {
+    updated: cleanupTomlAfterRemoval(updated),
+    removed: true,
+  };
+};
 
 // 将通用配置片段写入/移除 TOML 配置
 export const updateTomlCommonConfigSnippet = (
@@ -353,37 +395,26 @@ export const updateTomlCommonConfigSnippet = (
   }
 
   if (enabled) {
-    // 添加通用配置
-    // 先移除旧的通用配置（如果有）
-    let updatedConfig = tomlString;
-    if (previousCommonSnippet && tomlString.includes(previousCommonSnippet)) {
-      updatedConfig = tomlString.replace(previousCommonSnippet, "");
-    }
+    const { updated: baseConfig } = removeTomlCommonConfigSnippet(
+      tomlString,
+      snippetString,
+    );
 
-    // 在文件末尾添加新的通用配置
-    // 确保有适当的换行
-    const needsNewline = updatedConfig && !updatedConfig.endsWith("\n");
-    updatedConfig =
-      updatedConfig + (needsNewline ? "\n\n" : "\n") + snippetString;
-
-    // 保存当前通用配置片段
-    previousCommonSnippet = snippetString;
+    const needsNewline = baseConfig && !baseConfig.endsWith("\n");
+    const updatedConfig =
+      baseConfig + (needsNewline ? "\n\n" : "\n") + snippetString;
 
     return {
-      updatedConfig: updatedConfig.trim() + "\n",
+      updatedConfig: finalizeTomlConfig(updatedConfig),
     };
   } else {
-    // 移除通用配置
-    if (tomlString.includes(snippetString)) {
-      const updatedConfig = tomlString.replace(snippetString, "");
-      // 清理多余的空行
-      const cleaned = updatedConfig.replace(/\n{3,}/g, "\n\n").trim();
-
-      // 清空保存的状态
-      previousCommonSnippet = "";
-
+    const { updated, removed } = removeTomlCommonConfigSnippet(
+      tomlString,
+      snippetString,
+    );
+    if (removed) {
       return {
-        updatedConfig: cleaned ? cleaned + "\n" : "",
+        updatedConfig: updated,
       };
     }
     return {

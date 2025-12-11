@@ -269,7 +269,9 @@ describe("useProviderActions", () => {
       wrapper,
     });
 
-    await expect(result.current.switchProvider(provider)).resolves.toBeUndefined();
+    await expect(
+      result.current.switchProvider(provider),
+    ).rejects.toThrow("switch failed");
     expect(settingsApiGetMock).not.toHaveBeenCalled();
     expect(settingsApiApplyMock).not.toHaveBeenCalled();
   });
@@ -422,7 +424,9 @@ describe("useProviderActions", () => {
       wrapper,
     });
 
-    await result.current.switchProvider(provider);
+    await expect(
+      result.current.switchProvider(provider),
+    ).rejects.toThrow("switch failed");
 
     expect(settingsApiGetMock).not.toHaveBeenCalled();
     expect(settingsApiApplyMock).not.toHaveBeenCalled();

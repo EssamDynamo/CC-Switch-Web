@@ -81,12 +81,10 @@ export function useProviderActions(activeApp: AppId) {
   // 切换供应商
   const switchProvider = useCallback(
     async (provider: Provider) => {
-      try {
-        await switchProviderMutation.mutateAsync(provider.id);
-        await syncClaudePlugin(provider);
-      } catch {
-        // 错误提示由 mutation 与同步函数处理
-      }
+      await switchProviderMutation.mutateAsync(provider.id);
+      await syncClaudePlugin(provider);
+
+      return true;
     },
     [switchProviderMutation, syncClaudePlugin],
   );

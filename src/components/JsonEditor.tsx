@@ -35,6 +35,11 @@ const JsonEditor: React.FC<JsonEditorProps> = ({
   const { t } = useTranslation();
   const editorRef = useRef<HTMLDivElement>(null);
   const viewRef = useRef<EditorView | null>(null);
+  const onChangeRef = useRef(onChange);
+
+  useEffect(() => {
+    onChangeRef.current = onChange;
+  }, [onChange]);
 
   // JSON linter 函数
   const jsonLinter = useMemo(
@@ -115,7 +120,10 @@ const JsonEditor: React.FC<JsonEditorProps> = ({
       EditorView.updateListener.of((update) => {
         if (update.docChanged) {
           const newValue = update.state.doc.toString();
-          onChange(newValue);
+          const handleChange = onChangeRef.current;
+          if (handleChange) {
+            handleChange(newValue);
+          }
         }
       }),
     ];

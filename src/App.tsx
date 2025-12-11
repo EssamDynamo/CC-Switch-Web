@@ -172,15 +172,23 @@ function App() {
 
   // 编辑供应商
   const handleEditProvider = async (provider: Provider) => {
-    await updateProvider(provider);
-    setEditingProvider(null);
+    try {
+      await updateProvider(provider);
+      setEditingProvider(null);
+    } catch (error) {
+      console.error("[App] Failed to update provider", error);
+    }
   };
 
   // 确认删除供应商
   const handleConfirmDelete = async () => {
     if (!confirmDelete) return;
-    await deleteProvider(confirmDelete.id);
-    setConfirmDelete(null);
+    try {
+      await deleteProvider(confirmDelete.id);
+      setConfirmDelete(null);
+    } catch (error) {
+      console.error("[App] Failed to delete provider", error);
+    }
   };
 
   // 设置备用供应商
@@ -342,7 +350,11 @@ function App() {
     }
 
     // 3️⃣ 添加复制的供应商
-    await addProvider(duplicatedProvider);
+    try {
+      await addProvider(duplicatedProvider);
+    } catch (error) {
+      console.error("[App] Failed to duplicate provider", error);
+    }
   };
 
   // 导入配置成功后刷新

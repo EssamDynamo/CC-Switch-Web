@@ -45,6 +45,12 @@ const PromptPanel: React.FC<PromptPanelProps> = ({
     if (open) reload();
   }, [open, reload]);
 
+  useEffect(() => {
+    if (!open) {
+      setConfirmDialog(null);
+    }
+  }, [open]);
+
   const handleAdd = () => {
     setEditingId(null);
     setIsFormOpen(true);

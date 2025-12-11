@@ -5,6 +5,42 @@ All notable changes to CC Switch will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.0] - 2025-12-11
+
+### 🐛 Bug Fixes / Bug 修复
+
+**高优先级修复：**
+- **修复 switchProvider 错误处理** - `useProviderActions.ts`：切换供应商失败时错误不再被吞掉，现在会正确抛出让调用方处理
+- **修复 mutateAsync 未处理 rejection** - `App.tsx`：添加 try/catch 处理编辑、删除、复制供应商操作的异步错误
+- **修复全局可变状态竞态** - `providerConfigUtils.ts`：`updateTomlCommonConfigSnippet` 改为纯函数，消除 `previousCommonSnippet` 全局状态泄漏
+- **修复 useImportExport 闭包陷阱** - `useImportExport.ts`：依赖数组添加 `selectedFileContent`，修复导入文件时使用旧内容的问题
+
+**中优先级修复：**
+- **修复健康检查可用率误导** - `healthCheck.ts`：`mergeHealth` 无数据时不再默认 100% 可用，改为 `undefined`
+- **修复 localStorage 崩溃** - `UpdateContext.tsx`：Safari 隐私模式等环境下 localStorage 访问添加保护，优雅降级
+- **修复 MarkdownEditor/JsonEditor 闭包陷阱** - 使用 `useRef` 存储 `onChange` 回调，避免编辑器重建
+- **修复 PromptPanel 状态泄漏** - `PromptPanel.tsx`：关闭面板时重置 confirmDialog 状态
+- **修复导入定时器未清理** - `useImportExport.ts`：多次导入时清理旧定时器，避免跨次运行竞态
+
+**健壮性改进：**
+- **添加 baseUrl 验证** - `codexProviderPresets.ts`：生成第三方配置时验证和转义 URL，防止无效 TOML
+- **添加 fetch 超时/重试** - `adapter.ts`：Web 模式添加 30s 超时和重试机制，避免请求挂起
+- **添加健康检查超时** - `healthCheck.ts`：添加 10s AbortController 超时
+
+### 📁 Changed Files / 变更文件
+- `src/hooks/useProviderActions.ts`
+- `src/hooks/useImportExport.ts`
+- `src/utils/providerConfigUtils.ts`
+- `src/contexts/UpdateContext.tsx`
+- `src/lib/api/healthCheck.ts`
+- `src/lib/api/adapter.ts`
+- `src/components/MarkdownEditor.tsx`
+- `src/components/JsonEditor.tsx`
+- `src/components/prompts/PromptPanel.tsx`
+- `src/config/codexProviderPresets.ts`
+- `src/App.tsx`
+- `tests/hooks/useProviderActions.test.tsx`
+
 ## [0.4.4] - 2025-12-07
 
 ### 🐛 Bug Fixes / Bug 修复

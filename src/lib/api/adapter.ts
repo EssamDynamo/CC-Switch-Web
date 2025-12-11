@@ -10,6 +10,24 @@ interface Endpoint {
 }
 
 const API_BASE = "/api";
+const getEnvNumber = (value: unknown, fallback: number) => {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : fallback;
+};
+const WEB_FETCH_TIMEOUT_MS = Math.max(
+  0,
+  getEnvNumber(import.meta.env?.VITE_WEB_FETCH_TIMEOUT_MS, 30_000),
+);
+const WEB_FETCH_MAX_RETRIES = Math.max(
+  0,
+  Math.floor(
+    getEnvNumber(import.meta.env?.VITE_WEB_FETCH_RETRIES, 1),
+  ),
+);
+const WEB_FETCH_RETRY_DELAY_MS = Math.max(
+  0,
+  getEnvNumber(import.meta.env?.VITE_WEB_FETCH_RETRY_DELAY_MS, 500),
+);
 
 const encode = (value: unknown) => encodeURIComponent(String(value));
 
@@ -55,6 +73,28 @@ function getAutoTokens() {
   }
   return undefined;
 }
+
+async function fetchWithTimeout(
+  url: string,
+  init: RequestInit,
+  timeoutMs: number,
+): Promise<Response> {
+  if (timeoutMs <= 0) {
+    return fetch(url, init);
+  }
+
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+
+  try {
+    return await fetch(url, { ...init, signal: controller.signal });
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+const delay = (ms: number) =>
+  new Promise((resolve) => setTimeout(resolve, ms));
 
 export function commandToEndpoint(
   cmd: string,
@@ -522,23 +562,48 @@ export async function invoke<T>(
     init.body = JSON.stringify(endpoint.body);
   }
 
-  const response = await fetch(endpoint.url, init);
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(
-      errorText || `Request failed with status ${response.status}`,
-    );
+  for (let attempt = 0; attempt <= WEB_FETCH_MAX_RETRIES; attempt += 1) {
+    try {
+      const response = await fetchWithTimeout(
+        endpoint.url,
+        init,
+        WEB_FETCH_TIMEOUT_MS,
+      );
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(
+          errorText || `Request failed with status ${response.status}`,
+        );
+      }
+
+      if (response.status === 204) {
+        return undefined as T;
+      }
+
+      const contentType = response.headers.get("content-type") || "";
+      if (contentType.includes("application/json")) {
+        return (await response.json()) as T;
+      }
+
+      const text = await response.text();
+      return text as unknown as T;
+    } catch (error) {
+      const errorName = (error as any)?.name;
+      const isAbortError = errorName === "AbortError";
+      const isNetworkError = error instanceof TypeError;
+      const shouldRetry =
+        attempt < WEB_FETCH_MAX_RETRIES && (isAbortError || isNetworkError);
+
+      if (!shouldRetry) {
+        throw error;
+      }
+
+      if (WEB_FETCH_RETRY_DELAY_MS > 0) {
+        await delay(WEB_FETCH_RETRY_DELAY_MS);
+      }
+    }
   }
 
-  if (response.status === 204) {
-    return undefined as T;
-  }
-
-  const contentType = response.headers.get("content-type") || "";
-  if (contentType.includes("application/json")) {
-    return (await response.json()) as T;
-  }
-
-  const text = await response.text();
-  return text as unknown as T;
+  throw new Error("Request failed after retries");
 }

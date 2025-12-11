@@ -7,6 +7,7 @@ import type { AppId } from "./types";
 
 const RELAY_PULSE_API = "/api/health/status";
 const CACHE_TTL = 60 * 1000; // 1 分钟缓存
+const HEALTHCHECK_TIMEOUT_MS = 10_000;
 
 /** 健康状态枚举 */
 export type HealthStatus = "available" | "degraded" | "unavailable" | "unknown";
@@ -99,7 +100,10 @@ function mergeHealth(existing: ProviderHealth | undefined, incoming: ProviderHea
     status: worseStatus,
     latency: Math.max(existing.latency, incoming.latency),
     lastChecked: Math.max(existing.lastChecked, incoming.lastChecked),
-    availability: Math.min(existing.availability ?? 100, incoming.availability ?? 100),
+    availability:
+      existing.availability !== undefined || incoming.availability !== undefined
+        ? Math.min(existing.availability ?? 100, incoming.availability ?? 100)
+        : undefined,
   };
 }
 
@@ -115,9 +119,18 @@ export async function fetchAllHealthStatus(): Promise<Map<string, ProviderHealth
   }
 
   try {
-    const response = await fetch(RELAY_PULSE_API, {
-      headers: { Accept: "application/json" },
-    });
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), HEALTHCHECK_TIMEOUT_MS);
+
+    let response: Response;
+    try {
+      response = await fetch(RELAY_PULSE_API, {
+        headers: { Accept: "application/json" },
+        signal: controller.signal,
+      });
+    } finally {
+      clearTimeout(timer);
+    }
 
     if (!response.ok) {
       console.warn(`[HealthCheck] API returned ${response.status}`);
@@ -148,7 +161,13 @@ export async function fetchAllHealthStatus(): Promise<Map<string, ProviderHealth
     healthCache = newCache;
     return healthCache;
   } catch (error) {
-    console.warn("[HealthCheck] Failed to fetch health status:", error);
+    if ((error as any)?.name === "AbortError") {
+      console.warn(
+        `[HealthCheck] Request timed out after ${HEALTHCHECK_TIMEOUT_MS}ms`,
+      );
+    } else {
+      console.warn("[HealthCheck] Failed to fetch health status:", error);
+    }
     return healthCache; // 返回旧缓存
   }
 }

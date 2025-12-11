@@ -22,6 +22,31 @@ export interface CodexProviderPreset {
   theme?: PresetTheme;
 }
 
+function toTomlString(value: string): string {
+  return JSON.stringify(value);
+}
+
+function validateAndNormalizeBaseUrl(baseUrl: string): string {
+  const trimmed = (baseUrl ?? "").trim();
+
+  if (!trimmed) {
+    throw new Error("Base URL is required");
+  }
+
+  let parsed: URL;
+  try {
+    parsed = new URL(trimmed);
+  } catch {
+    throw new Error("Invalid base URL format");
+  }
+
+  if (!/^https?:$/.test(parsed.protocol)) {
+    throw new Error("Base URL must start with http:// or https://");
+  }
+
+  return parsed.toString();
+}
+
 /**
  * 生成第三方供应商的 auth.json
  */
@@ -46,14 +71,19 @@ export function generateThirdPartyConfig(
       .replace(/[^a-z0-9_]/g, "_")
       .replace(/^_+|_+$/g, "") || "custom";
 
-  return `model_provider = "${cleanProviderName}"
-model = "${modelName}"
+  const normalizedBaseUrl = validateAndNormalizeBaseUrl(baseUrl);
+  const tomlProviderName = toTomlString(cleanProviderName);
+  const tomlModelName = toTomlString(modelName);
+  const tomlBaseUrl = toTomlString(normalizedBaseUrl);
+
+  return `model_provider = ${tomlProviderName}
+model = ${tomlModelName}
 model_reasoning_effort = "high"
 disable_response_storage = true
 
 [model_providers.${cleanProviderName}]
-name = "${cleanProviderName}"
-base_url = "${baseUrl}"
+name = ${tomlProviderName}
+base_url = ${tomlBaseUrl}
 wire_api = "responses"
 requires_openai_auth = true`;
 }

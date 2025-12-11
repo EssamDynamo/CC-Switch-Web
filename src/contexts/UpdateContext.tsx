@@ -39,24 +39,69 @@ export function UpdateProvider({ children }: { children: React.ReactNode }) {
   const [error, setError] = useState<string | null>(null);
   const [isDismissed, setIsDismissed] = useState(false);
 
+  const safeGetItem = useCallback((key: string) => {
+    if (typeof window === "undefined" || !window?.localStorage) return null;
+    try {
+      return window.localStorage.getItem(key);
+    } catch (error) {
+      console.warn(`[UpdateContext] Failed to read localStorage key ${key}:`, error);
+      return null;
+    }
+  }, []);
+
+  const safeSetItem = useCallback((key: string, value: string) => {
+    if (typeof window === "undefined" || !window?.localStorage) return;
+    try {
+      window.localStorage.setItem(key, value);
+    } catch (error) {
+      console.warn(`[UpdateContext] Failed to write localStorage key ${key}:`, error);
+    }
+  }, []);
+
+  const safeRemoveItem = useCallback((key: string) => {
+    if (typeof window === "undefined" || !window?.localStorage) return;
+    try {
+      window.localStorage.removeItem(key);
+    } catch (error) {
+      console.warn(`[UpdateContext] Failed to remove localStorage key ${key}:`, error);
+    }
+  }, []);
+
+  const getDismissedVersion = useCallback(() => {
+    let dismissedVersion = safeGetItem(DISMISSED_VERSION_KEY);
+    if (!dismissedVersion) {
+      const legacy = safeGetItem(LEGACY_DISMISSED_KEY);
+      if (legacy) {
+        safeSetItem(DISMISSED_VERSION_KEY, legacy);
+        safeRemoveItem(LEGACY_DISMISSED_KEY);
+        dismissedVersion = legacy;
+      }
+    }
+
+    return dismissedVersion;
+  }, [safeGetItem, safeRemoveItem, safeSetItem]);
+
+  const persistDismissedVersion = useCallback(
+    (version: string) => {
+      safeSetItem(DISMISSED_VERSION_KEY, version);
+      safeRemoveItem(LEGACY_DISMISSED_KEY);
+    },
+    [safeRemoveItem, safeSetItem],
+  );
+
+  const clearDismissedVersion = useCallback(() => {
+    safeRemoveItem(DISMISSED_VERSION_KEY);
+    safeRemoveItem(LEGACY_DISMISSED_KEY);
+  }, [safeRemoveItem]);
+
   // 从 localStorage 读取已关闭的版本
   useEffect(() => {
     const current = updateInfo?.availableVersion;
     if (!current) return;
 
-    // 读取新键；若不存在，尝试迁移旧键
-    let dismissedVersion = localStorage.getItem(DISMISSED_VERSION_KEY);
-    if (!dismissedVersion) {
-      const legacy = localStorage.getItem(LEGACY_DISMISSED_KEY);
-      if (legacy) {
-        localStorage.setItem(DISMISSED_VERSION_KEY, legacy);
-        localStorage.removeItem(LEGACY_DISMISSED_KEY);
-        dismissedVersion = legacy;
-      }
-    }
-
+    const dismissedVersion = getDismissedVersion();
     setIsDismissed(dismissedVersion === current);
-  }, [updateInfo?.availableVersion]);
+  }, [getDismissedVersion, updateInfo?.availableVersion]);
 
   const isCheckingRef = useRef(false);
 
@@ -74,16 +119,7 @@ export function UpdateProvider({ children }: { children: React.ReactNode }) {
         setUpdateInfo(result.info);
         setUpdateHandle(result.update);
 
-        // 检查是否已经关闭过这个版本的提醒
-        let dismissedVersion = localStorage.getItem(DISMISSED_VERSION_KEY);
-        if (!dismissedVersion) {
-          const legacy = localStorage.getItem(LEGACY_DISMISSED_KEY);
-          if (legacy) {
-            localStorage.setItem(DISMISSED_VERSION_KEY, legacy);
-            localStorage.removeItem(LEGACY_DISMISSED_KEY);
-            dismissedVersion = legacy;
-          }
-        }
+        const dismissedVersion = getDismissedVersion();
         setIsDismissed(dismissedVersion === result.info.availableVersion);
         return true; // 有更新
       } else {
@@ -102,22 +138,19 @@ export function UpdateProvider({ children }: { children: React.ReactNode }) {
       setIsChecking(false);
       isCheckingRef.current = false;
     }
-  }, []);
+  }, [getDismissedVersion]);
 
   const dismissUpdate = useCallback(() => {
     setIsDismissed(true);
     if (updateInfo?.availableVersion) {
-      localStorage.setItem(DISMISSED_VERSION_KEY, updateInfo.availableVersion);
-      // 清理旧键
-      localStorage.removeItem(LEGACY_DISMISSED_KEY);
+      persistDismissedVersion(updateInfo.availableVersion);
     }
-  }, [updateInfo?.availableVersion]);
+  }, [persistDismissedVersion, updateInfo?.availableVersion]);
 
   const resetDismiss = useCallback(() => {
     setIsDismissed(false);
-    localStorage.removeItem(DISMISSED_VERSION_KEY);
-    localStorage.removeItem(LEGACY_DISMISSED_KEY);
-  }, []);
+    clearDismissedVersion();
+  }, [clearDismissedVersion]);
 
   // 应用启动时自动检查更新
   useEffect(() => {

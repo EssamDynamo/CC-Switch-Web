@@ -63,45 +63,9 @@
 
 ## 快速开始
 
-### 方式一：桌面应用（GUI）
+### 方式一：Web 服务器模式（推荐）
 
-功能完整的桌面应用，带图形界面，基于 Tauri 构建。
-
-| 平台 | 下载链接 | 说明 |
-|------|----------|------|
-| **Windows** | [CC-Switch-v0.5.1-Windows.msi](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.5.1/CC-Switch-v0.5.1-Windows.msi) | 安装版（推荐） |
-| | [CC-Switch-v0.5.1-Windows-Portable.zip](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.5.1/CC-Switch-v0.5.1-Windows-Portable.zip) | 绿色版（免安装） |
-| **macOS** | [CC-Switch-v0.5.1-macOS.zip](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.5.1/CC-Switch-v0.5.1-macOS.zip) | 通用二进制（Intel + Apple Silicon） |
-| **Linux** | [CC-Switch-v0.5.1-Linux.AppImage](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.5.1/CC-Switch-v0.5.1-Linux.AppImage) | AppImage（通用） |
-| | [CC-Switch-v0.5.1-Linux.deb](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.5.1/CC-Switch-v0.5.1-Linux.deb) | Debian/Ubuntu 包 |
-
-**macOS 提示**：如遇"已损坏"警告，在终端执行：`xattr -cr "/Applications/CC Switch.app"`
-
-**Linux AppImage**：先添加执行权限：`chmod +x CC-Switch-*.AppImage`
-
-**Linux 一键安装**（推荐）：
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/Laliet/CC-Switch-Web/main/scripts/install.sh | bash
-```
-
-该脚本会：
-- 自动检测系统架构（x86_64/aarch64）
-- 下载最新版 AppImage
-- 校验 SHA256（如有校验文件）
-- 安装到 `~/.local/bin/ccswitch`（普通用户）或 `/usr/local/bin/ccswitch`（root）
-- 创建桌面快捷方式和应用图标
-
-**高级选项**：
-```bash
-# 安装指定版本
-VERSION=v0.5.1 curl -fsSL https://...install.sh | bash
-
-# 跳过校验
-NO_CHECKSUM=1 curl -fsSL https://...install.sh | bash
-```
-
-### 方式二：Web 服务器模式（无头/云端）
+推荐优先使用 Web 服务器模式，尤其适合云端/无头部署与远程访问。
 
 轻量级 Web 服务器，适用于无图形界面的服务器环境。通过浏览器访问，无需 GUI 依赖。
 
@@ -202,6 +166,44 @@ HOST=0.0.0.0 PORT=3000 ./target/release/examples/server
 | `CORS_ALLOW_CREDENTIALS` | 是否允许 CORS 携带凭据 | false |
 | `ALLOW_HTTP_BASIC_OVER_HTTP` | 抑制 HTTP 警告 | false |
 | `WEB_CSRF_TOKEN` | 覆盖 CSRF Token | （自动生成） |
+
+### 方式二：桌面应用（GUI）
+
+功能完整的桌面应用，带图形界面，基于 Tauri 构建。
+
+| 平台 | 下载链接 | 说明 |
+|------|----------|------|
+| **Windows** | [CC-Switch-v0.5.1-Windows.msi](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.5.1/CC-Switch-v0.5.1-Windows.msi) | 安装版（推荐） |
+| | [CC-Switch-v0.5.1-Windows-Portable.zip](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.5.1/CC-Switch-v0.5.1-Windows-Portable.zip) | 绿色版（免安装） |
+| **macOS** | [CC-Switch-v0.5.1-macOS.zip](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.5.1/CC-Switch-v0.5.1-macOS.zip) | 通用二进制（Intel + Apple Silicon） |
+| **Linux** | [CC-Switch-v0.5.1-Linux.AppImage](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.5.1/CC-Switch-v0.5.1-Linux.AppImage) | AppImage（通用） |
+| | [CC-Switch-v0.5.1-Linux.deb](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.5.1/CC-Switch-v0.5.1-Linux.deb) | Debian/Ubuntu 包 |
+
+**macOS 提示**：如遇"已损坏"警告，在终端执行：`xattr -cr "/Applications/CC Switch.app"`
+
+**Linux AppImage**：先添加执行权限：`chmod +x CC-Switch-*.AppImage`
+
+**Linux 一键安装**（推荐）：
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Laliet/CC-Switch-Web/main/scripts/install.sh | bash
+```
+
+该脚本会：
+- 自动检测系统架构（x86_64/aarch64）
+- 下载最新版 AppImage
+- 校验 SHA256（如有校验文件）
+- 安装到 `~/.local/bin/ccswitch`（普通用户）或 `/usr/local/bin/ccswitch`（root）
+- 创建桌面快捷方式和应用图标
+
+**高级选项**：
+```bash
+# 安装指定版本
+VERSION=v0.5.1 curl -fsSL https://...install.sh | bash
+
+# 跳过校验
+NO_CHECKSUM=1 curl -fsSL https://...install.sh | bash
+```
 
 ---
 

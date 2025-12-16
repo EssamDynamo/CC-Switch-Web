@@ -66,7 +66,7 @@ const UsageFooter: React.FC<UsageFooterProps> = ({
 
     if (failoverAttemptRef.current === providerId) return;
     failoverAttemptRef.current = providerId;
-    onAutoFailover?.(backupProviderId);
+    void onAutoFailover?.(backupProviderId);
   }, [
     backupProviderId,
     isCurrent,

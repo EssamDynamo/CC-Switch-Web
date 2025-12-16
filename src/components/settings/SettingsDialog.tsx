@@ -133,7 +133,7 @@ export function SettingsDialog({
     } catch (error) {
       console.error("[SettingsDialog] Failed to save settings", error);
     }
-  }, [closeDialog, saveSettings]);
+  }, [closeAfterSave, saveSettings]);
 
   const handleRestartLater = useCallback(() => {
     setShowRestartPrompt(false);

@@ -93,7 +93,9 @@ export function useHealthCheck(
         };
       }
 
-      console.log("[HealthCheck] Result:", { monitoredProviders, result });
+      if (import.meta.env.DEV) {
+        console.log("[HealthCheck] Result:", { monitoredProviders, result });
+      }
 
       return result;
     },

@@ -1,5 +1,14 @@
 import { z } from "zod";
 
+function isHttpOrHttpsUrl(url: string): boolean {
+  try {
+    const parsed = new URL(url);
+    return parsed.protocol === "http:" || parsed.protocol === "https:";
+  } catch {
+    return false;
+  }
+}
+
 /**
  * 解析 JSON 语法错误，提取位置信息
  */
@@ -37,7 +46,15 @@ function parseJsonError(error: unknown): string {
 
 export const providerSchema = z.object({
   name: z.string().min(1, "请填写供应商名称"),
-  websiteUrl: z.string().url("请输入有效的网址").optional().or(z.literal("")),
+  websiteUrl: z
+    .union([
+      z.literal(""),
+      z
+        .string()
+        .url("请输入有效的网址")
+        .refine(isHttpOrHttpsUrl, { message: "网址必须使用 http 或 https 协议" }),
+    ])
+    .optional(),
   notes: z.string().optional(),
   settingsConfig: z
     .string()

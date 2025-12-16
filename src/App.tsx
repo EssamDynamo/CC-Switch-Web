@@ -59,7 +59,7 @@ async function validateWebCredentials(encoded: string): Promise<boolean> {
   });
 
   if (response.status === 401) return false;
-  return true;
+  return response.ok;
 }
 
 function AppContent() {
@@ -100,24 +100,33 @@ function AppContent() {
 
   // 监听来自托盘菜单的切换事件
   useEffect(() => {
+    let cancelled = false;
     let unsubscribe: (() => void) | undefined;
 
     const setupListener = async () => {
       try {
-        unsubscribe = await providersApi.onSwitched(
+        const unlisten = await providersApi.onSwitched(
           async (event: ProviderSwitchEvent) => {
             if (event.appType === activeApp) {
               await refetch();
             }
           },
         );
+
+        if (cancelled) {
+          unlisten();
+          return;
+        }
+
+        unsubscribe = unlisten;
       } catch (error) {
         console.error("[App] Failed to subscribe provider switch event", error);
       }
     };
 
-    setupListener();
+    void setupListener();
     return () => {
+      cancelled = true;
       unsubscribe?.();
     };
   }, [activeApp, refetch]);
@@ -235,39 +244,39 @@ function AppContent() {
   // 自动故障切换
   const handleAutoFailover = useCallback(
     async (targetId?: string | null) => {
-      const targetProviderId = targetId ?? backupProviderId;
-      if (!targetProviderId || !currentProviderId) return;
-
-      const targetProvider = providers[targetProviderId];
-      if (!targetProvider) return;
-
-      const ensureHealthMap = async () => {
-        if (
-          healthMap[currentProviderId] !== undefined &&
-          healthMap[targetProviderId] !== undefined
-        ) {
-          return healthMap;
-        }
-        const refreshed = await refetchHealth();
-        return refreshed.data ?? healthMap;
-      };
-
-      const latestHealthMap = await ensureHealthMap();
-      const currentHealth = latestHealthMap?.[currentProviderId];
-      const backupHealth = latestHealthMap?.[targetProviderId];
-
-      if (!currentHealth || currentHealth.isHealthy) return;
-
-      if (!backupHealth || !backupHealth.isHealthy) {
-        toast.warning(
-          t("provider.backupUnavailable", {
-            defaultValue: "备用供应商也不可用，保持当前供应商",
-          }),
-        );
-        return;
-      }
-
       try {
+        const targetProviderId = targetId ?? backupProviderId;
+        if (!targetProviderId || !currentProviderId) return;
+
+        const targetProvider = providers[targetProviderId];
+        if (!targetProvider) return;
+
+        const ensureHealthMap = async () => {
+          if (
+            healthMap[currentProviderId] !== undefined &&
+            healthMap[targetProviderId] !== undefined
+          ) {
+            return healthMap;
+          }
+          const refreshed = await refetchHealth();
+          return refreshed.data ?? healthMap;
+        };
+
+        const latestHealthMap = await ensureHealthMap();
+        const currentHealth = latestHealthMap?.[currentProviderId];
+        const backupHealth = latestHealthMap?.[targetProviderId];
+
+        if (!currentHealth || currentHealth.isHealthy) return;
+
+        if (!backupHealth || !backupHealth.isHealthy) {
+          toast.warning(
+            t("provider.backupUnavailable", {
+              defaultValue: "备用供应商也不可用，保持当前供应商",
+            }),
+          );
+          return;
+        }
+
         await switchProvider(targetProvider);
         await refetch();
         toast.warning(
@@ -284,6 +293,7 @@ function AppContent() {
             error: detail,
           }),
         );
+        return;
       }
     },
     [

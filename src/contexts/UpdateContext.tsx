@@ -22,7 +22,7 @@ interface UpdateContextValue {
   dismissUpdate: () => void;
 
   // 操作方法
-  checkUpdate: () => Promise<boolean>;
+  checkUpdate: () => Promise<"available" | "up-to-date" | "error" | "skipped">;
   resetDismiss: () => void;
 }
 
@@ -115,7 +115,7 @@ export function UpdateProvider({ children }: { children: React.ReactNode }) {
   const isCheckingRef = useRef(false);
 
   const checkUpdate = useCallback(async () => {
-    if (isCheckingRef.current) return false;
+    if (isCheckingRef.current) return "skipped";
     isCheckingRef.current = true;
     setIsChecking(true);
     setError(null);
@@ -130,19 +130,20 @@ export function UpdateProvider({ children }: { children: React.ReactNode }) {
 
         const dismissedVersion = getDismissedVersion();
         setIsDismissed(dismissedVersion === result.info.availableVersion);
-        return true; // 有更新
+        return "available";
       } else {
         setHasUpdate(false);
         setUpdateInfo(null);
         setUpdateHandle(null);
         setIsDismissed(false);
-        return false; // 已是最新
+        return "up-to-date";
       }
     } catch (err) {
       console.error("检查更新失败:", err);
-      setError(err instanceof Error ? err.message : "检查更新失败");
+      const message = err instanceof Error ? err.message : "检查更新失败";
+      setError(message);
       setHasUpdate(false);
-      throw err; // 抛出错误让调用方处理
+      return "error";
     } finally {
       setIsChecking(false);
       isCheckingRef.current = false;
@@ -165,7 +166,7 @@ export function UpdateProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     // 延迟1秒后检查，避免影响启动体验
     const timer = setTimeout(() => {
-      checkUpdate().catch(console.error);
+      void checkUpdate();
     }, 1000);
 
     return () => clearTimeout(timer);

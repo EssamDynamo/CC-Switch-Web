@@ -1,7 +1,23 @@
-import { useState, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { promptsApi, type Prompt, type AppId } from "@/lib/api";
+
+function deepClone<T>(value: T): T {
+  const structuredCloneFn: undefined | ((input: T) => T) = (
+    globalThis as unknown as { structuredClone?: (input: T) => T }
+  ).structuredClone;
+
+  try {
+    if (typeof structuredCloneFn === "function") {
+      return structuredCloneFn(value);
+    }
+  } catch {
+    // Fall through to JSON clone.
+  }
+
+  return JSON.parse(JSON.stringify(value)) as T;
+}
 
 export function usePromptActions(appId: AppId) {
   const { t } = useTranslation();
@@ -11,10 +27,24 @@ export function usePromptActions(appId: AppId) {
     null,
   );
 
+  const promptsRef = useRef(prompts);
+  const lastPromptsWriteTokenRef = useRef(0);
+
+  useEffect(() => {
+    promptsRef.current = prompts;
+  }, [prompts]);
+
+  const bumpPromptsWriteToken = useCallback(() => {
+    lastPromptsWriteTokenRef.current += 1;
+    return lastPromptsWriteTokenRef.current;
+  }, []);
+
   const reload = useCallback(async () => {
     setLoading(true);
     try {
       const data = await promptsApi.getPrompts(appId);
+      bumpPromptsWriteToken();
+      promptsRef.current = data;
       setPrompts(data);
 
       // 同时加载当前文件内容
@@ -29,7 +59,7 @@ export function usePromptActions(appId: AppId) {
     } finally {
       setLoading(false);
     }
-  }, [appId, t]);
+  }, [appId, bumpPromptsWriteToken, t]);
 
   const savePrompt = useCallback(
     async (id: string, prompt: Prompt) => {
@@ -75,31 +105,36 @@ export function usePromptActions(appId: AppId) {
 
   const toggleEnabled = useCallback(
     async (id: string, enabled: boolean) => {
-      // Optimistic update
-      const previousPrompts = prompts;
+      const previousPromptsSnapshot = deepClone(promptsRef.current);
+      const writeToken = bumpPromptsWriteToken();
 
-      // 如果要启用当前提示词，先禁用其他所有提示词
-      if (enabled) {
-        const updatedPrompts = Object.keys(prompts).reduce(
-          (acc, key) => {
-            acc[key] = {
-              ...prompts[key],
-              enabled: key === id,
-            };
-            return acc;
-          },
-          {} as Record<string, Prompt>,
-        );
-        setPrompts(updatedPrompts);
-      } else {
-        setPrompts((prev) => ({
+      setPrompts((prev) => {
+        const target = prev[id];
+        if (!target) return prev;
+
+        if (enabled) {
+          return Object.keys(prev).reduce(
+            (acc, key) => {
+              const existing = prev[key];
+              if (!existing) return acc;
+              acc[key] = {
+                ...existing,
+                enabled: key === id,
+              };
+              return acc;
+            },
+            {} as Record<string, Prompt>,
+          );
+        }
+
+        return {
           ...prev,
           [id]: {
-            ...prev[id],
+            ...target,
             enabled: false,
           },
-        }));
-      }
+        };
+      });
 
       try {
         if (enabled) {
@@ -107,8 +142,15 @@ export function usePromptActions(appId: AppId) {
           toast.success(t("prompts.enableSuccess"));
         } else {
           // 禁用提示词 - 需要后端支持
+          const promptToUpdate = previousPromptsSnapshot[id];
+          if (!promptToUpdate) {
+            await reload();
+            toast.error(t("prompts.disableFailed"));
+            return;
+          }
+
           await promptsApi.upsertPrompt(appId, id, {
-            ...prompts[id],
+            ...promptToUpdate,
             enabled: false,
           });
           toast.success(t("prompts.disableSuccess"));
@@ -116,14 +158,16 @@ export function usePromptActions(appId: AppId) {
         await reload();
       } catch (error) {
         // Rollback on failure
-        setPrompts(previousPrompts);
+        if (lastPromptsWriteTokenRef.current === writeToken) {
+          setPrompts(previousPromptsSnapshot);
+        }
         toast.error(
           enabled ? t("prompts.enableFailed") : t("prompts.disableFailed"),
         );
         throw error;
       }
     },
-    [appId, prompts, reload, t],
+    [appId, bumpPromptsWriteToken, reload, t],
   );
 
   const importFromFile = useCallback(async () => {

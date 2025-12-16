@@ -50,9 +50,13 @@ export function useSettingsForm(): UseSettingsFormResult {
 
   const readPersistedLanguage = useCallback((): Language => {
     if (typeof window !== "undefined") {
-      const stored = window.localStorage.getItem("language");
-      if (stored === "en" || stored === "zh") {
-        return stored;
+      try {
+        const stored = window.localStorage.getItem("language");
+        if (stored === "en" || stored === "zh") {
+          return stored;
+        }
+      } catch {
+        // localStorage 可能在隐私模式/受限环境下抛异常，忽略并回退到 i18n.language
       }
     }
     return normalizeLanguage(i18n.language);

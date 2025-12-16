@@ -554,11 +554,7 @@ export function commandToEndpoint(
     }
 
     default:
-      return {
-        method: "POST",
-        url: `${API_BASE}/tauri/${cmd}`,
-        body: args,
-      };
+      throw new Error(`Command ${cmd} is not supported in web mode`);
   }
 }
 
@@ -573,6 +569,8 @@ export async function invoke<T>(
   switch (cmd) {
     case "update_tray_menu":
       return true as T;
+    case "read_live_provider_settings":
+      return null as T;
     case "check_for_updates":
       return null as T;
     case "restart_app":

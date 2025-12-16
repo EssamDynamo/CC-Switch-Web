@@ -4,10 +4,12 @@
  */
 
 import type { AppId } from "./types";
+import { isWeb } from "./adapter";
 
 const RELAY_PULSE_API = "/api/health/status";
 const CACHE_TTL = 60 * 1000; // 1 分钟缓存
 const HEALTHCHECK_TIMEOUT_MS = 10_000;
+const WEB_AUTH_STORAGE_KEY = "cc-switch-web-auth";
 
 /** 健康状态枚举 */
 export type HealthStatus = "available" | "degraded" | "unavailable" | "unknown";
@@ -82,6 +84,17 @@ function calculateAvailability(
 
 export { statusToHealth, calculateAvailability, mergeHealth };
 
+function getStoredWebCredentials(): string | undefined {
+  if (typeof window === "undefined") return undefined;
+  try {
+    const value = window.sessionStorage?.getItem(WEB_AUTH_STORAGE_KEY);
+    if (!value) return undefined;
+    return value;
+  } catch {
+    return undefined;
+  }
+}
+
 function mergeHealth(
   existing: ProviderHealth | undefined,
   incoming: ProviderHealth,
@@ -131,8 +144,15 @@ export async function fetchAllHealthStatus(): Promise<
 
     let response: Response;
     try {
+      const headers: Record<string, string> = { Accept: "application/json" };
+      if (isWeb()) {
+        const storedAuth = getStoredWebCredentials();
+        if (storedAuth) {
+          headers.Authorization = `Basic ${storedAuth}`;
+        }
+      }
       response = await fetch(RELAY_PULSE_API, {
-        headers: { Accept: "application/json" },
+        headers,
         signal: controller.signal,
       });
     } finally {

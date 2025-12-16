@@ -203,9 +203,18 @@ export function useImportExport(
         const defaultName = `cc-switch-config-${
           new Date().toISOString().split("T")[0]
         }.json`;
+        const headers: Record<string, string> = { Accept: "application/json" };
+        try {
+          const storedAuth = window.sessionStorage?.getItem(
+            "cc-switch-web-auth",
+          );
+          if (storedAuth) {
+            headers.Authorization = `Basic ${storedAuth}`;
+          }
+        } catch {}
         const response = await fetch("/api/config/export", {
           credentials: "include",
-          headers: { Accept: "application/json" },
+          headers,
         });
         if (!response.ok) {
           throw new Error(await response.text());

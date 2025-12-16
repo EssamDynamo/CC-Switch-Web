@@ -5,6 +5,63 @@ All notable changes to CC Switch will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.3] - 2025-12-16
+
+### 🔒 Security / 安全修复
+
+**Critical / 严重：**
+- **修复 API Key 日志泄露** - `DeepLinkImportDialog.tsx`: 添加 `maskApiKey()` 函数，日志和 UI 展示均脱敏（仅保留前后各 2-4 位）
+- **修复 XSS 漏洞** - `ApiKeySection.tsx`: 添加 `isSafeUrl()` 校验，仅允许 http/https 协议链接，阻止 `javascript:` 等危险 scheme
+
+**High / 高优先级：**
+- **修复 URL schema 验证不足** - `provider.ts`: 添加 `isHttpOrHttpsUrl()` refine 校验，拒绝 `javascript:`/`data:` 等危险协议
+
+### 🐛 Bug Fixes / Bug 修复
+
+**Web 模式修复：**
+- **修复 405 错误** - `adapter.ts`: 移除 `/api/tauri/*` fallback，未知命令抛出明确错误；`read_live_provider_settings` 返回 null
+- **修复健康检查 401** - `healthCheck.ts`: Web 模式下自动添加 Authorization 头
+- **修复导出配置 401** - `useImportExport.ts`: Web 模式导出配置时添加 Authorization 头
+- **修复登录校验逻辑** - `App.tsx`: `return true` → `return response.ok`，只有 2xx 状态才视为成功
+
+**竞态条件与内存泄漏：**
+- **修复 useEffect 竞态条件** - `App.tsx`: 添加 `cancelled` 标记，cleanup 时正确取消订阅，避免事件监听泄漏
+- **修复闭包陷阱** - `usePromptActions.ts`: 深拷贝快照 + 函数式更新 + 写入令牌机制，防止并发触发时数据覆盖
+
+**Promise rejection 处理：**
+- **修复未处理 Promise rejection** - `App.tsx`: `handleAutoFailover` 顶层包 try/catch
+- **修复未处理 Promise rejection** - `UsageFooter.tsx`: 改为 `void onAutoFailover?.(...)`
+
+**其他修复：**
+- **修复生产环境日志污染** - `useHealthCheck.ts`: 仅 `import.meta.env.DEV` 下输出轮询日志
+- **修复 localStorage 异常** - `useSettingsForm.ts`: 添加 try/catch，Safari 隐私模式下优雅降级
+- **修复 checkUpdate 抛错** - `UpdateContext.tsx`: 不再 throw，改为写入 error 状态
+- **修复闭包依赖遗漏** - `SettingsDialog.tsx`: 补齐 `closeAfterSave` 依赖
+
+### 🧪 Tests / 测试
+
+- 新增 `tests/lib/adapter.auth.test.ts` - 未知命令错误测试
+- 新增 `tests/lib/providerSchema.test.ts` - URL schema 校验测试
+- 新增 `tests/components/ApiKeySection.test.tsx` - XSS 防护测试
+- 测试数量：139 → 142（+3）
+
+### 📁 Changed Files / 变更文件
+
+- `src/App.tsx` - 竞态条件 + rejection 处理
+- `src/components/DeepLinkImportDialog.tsx` - API Key 脱敏
+- `src/components/UsageFooter.tsx` - void 处理
+- `src/components/providers/forms/shared/ApiKeySection.tsx` - XSS 防护
+- `src/components/settings/AboutSection.tsx` - checkUpdate 返回值适配
+- `src/components/settings/SettingsDialog.tsx` - 依赖项修复
+- `src/contexts/UpdateContext.tsx` - 不再 throw
+- `src/hooks/useHealthCheck.ts` - DEV-only 日志
+- `src/hooks/useImportExport.ts` - 认证头修复
+- `src/hooks/usePromptActions.ts` - 闭包陷阱修复
+- `src/hooks/useSettingsForm.ts` - localStorage try/catch
+- `src/lib/api/adapter.ts` - 405 错误修复
+- `src/lib/api/healthCheck.ts` - 认证头修复
+- `src/lib/schemas/provider.ts` - URL schema 校验
+
 ### v0.5.2 (2025-12-16)
 
 #### 🐛 Bug Fixes

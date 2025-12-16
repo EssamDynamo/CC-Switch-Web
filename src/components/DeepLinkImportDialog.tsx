@@ -19,6 +19,29 @@ interface DeeplinkError {
   error: string;
 }
 
+function maskApiKey(
+  apiKey: string | null | undefined,
+  options?: { keepStart?: number; keepEnd?: number },
+): string {
+  if (!apiKey) return "";
+
+  const keepStart = options?.keepStart ?? 4;
+  const keepEnd = options?.keepEnd ?? 4;
+  const value = apiKey;
+
+  if (value.length <= keepStart + keepEnd) {
+    if (value.length <= 4) return "***";
+
+    const shortKeepStart = Math.min(2, value.length);
+    const shortKeepEnd = Math.min(2, value.length - shortKeepStart);
+    return `${value.slice(0, shortKeepStart)}***${
+      shortKeepEnd > 0 ? value.slice(-shortKeepEnd) : ""
+    }`;
+  }
+
+  return `${value.slice(0, keepStart)}***${value.slice(-keepEnd)}`;
+}
+
 export function DeepLinkImportDialog() {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
@@ -35,7 +58,11 @@ export function DeepLinkImportDialog() {
     const unlistenImport = import("@tauri-apps/api/event")
       .then(({ listen }) =>
         listen<DeepLinkImportRequest>("deeplink-import", (event) => {
-          console.log("Deep link import event received:", event.payload);
+          console.log("Deep link import event received:", {
+            app: event.payload?.app,
+            name: event.payload?.name,
+            apiKey: maskApiKey(event.payload?.apiKey, { keepStart: 2, keepEnd: 2 }),
+          });
           setRequest(event.payload);
           setIsOpen(true);
         }),
@@ -104,11 +131,8 @@ export function DeepLinkImportDialog() {
 
   if (!request) return null;
 
-  // Mask API key for display (show first 4 chars + ***)
   const maskedApiKey =
-    request.apiKey.length > 4
-      ? `${request.apiKey.substring(0, 4)}${"*".repeat(20)}`
-      : "****";
+    maskApiKey(request.apiKey, { keepStart: 4, keepEnd: 4 }) || "***";
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>

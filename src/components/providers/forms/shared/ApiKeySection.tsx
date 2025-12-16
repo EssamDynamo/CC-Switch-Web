@@ -2,6 +2,15 @@ import { useTranslation } from "react-i18next";
 import ApiKeyInput from "../ApiKeyInput";
 import type { ProviderCategory } from "@/types";
 
+function isSafeUrl(url: string): boolean {
+  try {
+    const parsed = new URL(url);
+    return parsed.protocol === "http:" || parsed.protocol === "https:";
+  } catch {
+    return false;
+  }
+}
+
 interface ApiKeySectionProps {
   id?: string;
   label?: string;
@@ -44,6 +53,15 @@ export function ApiKeySection({
   };
 
   const finalPlaceholder = placeholder || defaultPlaceholder;
+  const normalizedWebsiteUrl = websiteUrl.trim();
+  const safeWebsiteUrl = isSafeUrl(normalizedWebsiteUrl)
+    ? normalizedWebsiteUrl
+    : "";
+  const shouldRenderApiKeyLink = shouldShowLink && Boolean(safeWebsiteUrl);
+  const shouldRenderPartnerInfo = Boolean(
+    shouldShowLink && isPartner && partnerPromotionKey,
+  );
+  const shouldRenderFooter = shouldRenderApiKeyLink || shouldRenderPartnerInfo;
 
   return (
     <div className="space-y-1">
@@ -60,21 +78,23 @@ export function ApiKeySection({
         disabled={disabled ?? category === "official"}
       />
       {/* API Key 获取链接 */}
-      {shouldShowLink && websiteUrl && (
+      {shouldRenderFooter && (
         <div className="space-y-2 -mt-1 pl-1">
-          <a
-            href={websiteUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-xs text-blue-400 dark:text-blue-500 hover:text-blue-500 dark:hover:text-blue-400 transition-colors"
-          >
-            {t("providerForm.getApiKey", {
-              defaultValue: "获取 API Key",
-            })}
-          </a>
+          {shouldRenderApiKeyLink && (
+            <a
+              href={safeWebsiteUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs text-blue-400 dark:text-blue-500 hover:text-blue-500 dark:hover:text-blue-400 transition-colors"
+            >
+              {t("providerForm.getApiKey", {
+                defaultValue: "获取 API Key",
+              })}
+            </a>
+          )}
 
           {/* 合作伙伴促销信息 */}
-          {isPartner && partnerPromotionKey && (
+          {shouldRenderPartnerInfo && partnerPromotionKey && (
             <div className="rounded-md bg-blue-50 dark:bg-blue-950/30 p-2.5 border border-blue-200 dark:border-blue-800">
               <p className="text-xs leading-relaxed text-blue-700 dark:text-blue-300">
                 💡{" "}

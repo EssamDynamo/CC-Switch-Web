@@ -110,13 +110,12 @@ export function AboutSection({ isPortable }: AboutSectionProps) {
       return;
     }
 
-    try {
-      const available = await checkUpdate();
-      if (!available) {
-        toast.success(t("settings.upToDate"));
-      }
-    } catch (error) {
-      console.error("[AboutSection] Check update failed", error);
+    const result = await checkUpdate();
+    if (result === "up-to-date") {
+      toast.success(t("settings.upToDate"));
+      return;
+    }
+    if (result === "error") {
       toast.error(t("settings.checkUpdateFailed"));
     }
   }, [checkUpdate, hasUpdate, isPortable, resetDismiss, t, updateHandle]);

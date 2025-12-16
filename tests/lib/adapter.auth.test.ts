@@ -100,4 +100,24 @@ describe("adapter auth (web mode)", () => {
       Object.values(headers).some((value) => value.startsWith("Bearer ")),
     ).toBe(false);
   });
+
+  it("invoke returns null for read_live_provider_settings in web mode", async () => {
+    const fetchSpy = vi.spyOn(globalThis, "fetch");
+    const { invoke } = await importAdapter();
+
+    await expect(
+      invoke("read_live_provider_settings", { app: "claude" }),
+    ).resolves.toBeNull();
+    expect(fetchSpy).not.toHaveBeenCalled();
+  });
+
+  it("invoke throws a clear error for unsupported commands in web mode", async () => {
+    const fetchSpy = vi.spyOn(globalThis, "fetch");
+    const { invoke } = await importAdapter();
+
+    await expect(invoke("some_unknown_command")).rejects.toThrow(
+      "Command some_unknown_command is not supported in web mode",
+    );
+    expect(fetchSpy).not.toHaveBeenCalled();
+  });
 });

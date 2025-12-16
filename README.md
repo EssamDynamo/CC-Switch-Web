@@ -28,24 +28,21 @@ Whether you're working locally or in a headless cloud environment, CC-Switch-Web
 
 ---
 
-## What's New in v0.5.1
-
-- Fixed 14 bugs across error handling, state management, closure traps, and other edge cases
-- Hardened API requests with timeout and retry handling for better resiliency
-- Improved compatibility in edge environments such as Safari private mode
-
----
-
-## What's New in v0.5.1
+## What's New in v0.5.2
 
 ### 🐛 Bug Fixes
-- Resolved 14 issues spanning error handling, state management, and closure-related bugs
+- Fixed `crypto.randomUUID` unavailable in non-secure context (HTTP) for Web mode
+- Fixed `process.env` unavailable in browser causing errors
+- Fixed Web dev mode login authentication flow (Basic Auth + CSRF Token)
+- Fixed Skills API AbortError caused by remote repo fetch timeout
+- Fixed ComposioHQ/awesome-claude-skills repo branch name (main → master)
 
-### 🔁 Reliability
-- Added timeout and retry safeguards to make API requests more robust
-
-### 🌐 Compatibility
-- Better behavior in Safari private mode and other edge environments
+### ⚡ Improvements
+- Skills API now returns warnings; local skills still display when remote fetch fails
+- Increased Skills repo download timeout (HTTP: 120s, total: 180s)
+- Increased frontend API request timeout (30s → 180s)
+- Added Web login dialog with manual password authentication
+- Added CSRF Token API endpoint `GET /api/system/csrf-token`
 
 ---
 
@@ -75,8 +72,8 @@ Download precompiled server binary—no compilation required:
 
 | Architecture | Download |
 |--------------|----------|
-| **Linux x86_64** | [cc-switch-server-linux-x86_64](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.5.1/cc-switch-server-linux-x86_64) |
-| **Linux aarch64** | [cc-switch-server-linux-aarch64](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.5.1/cc-switch-server-linux-aarch64) |
+| **Linux x86_64** | [cc-switch-server-linux-x86_64](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.5.2/cc-switch-server-linux-x86_64) |
+| **Linux aarch64** | [cc-switch-server-linux-aarch64](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.5.2/cc-switch-server-linux-aarch64) |
 
 **One-Line Deploy**:
 ```bash
@@ -173,11 +170,11 @@ Full-featured desktop app with graphical interface, built with Tauri.
 
 | Platform | Download | Description |
 |----------|----------|-------------|
-| **Windows** | [CC-Switch-v0.5.1-Windows.msi](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.5.1/CC-Switch-v0.5.1-Windows.msi) | Installer (recommended) |
-| | [CC-Switch-v0.5.1-Windows-Portable.zip](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.5.1/CC-Switch-v0.5.1-Windows-Portable.zip) | Portable (no install) |
-| **macOS** | [CC-Switch-v0.5.1-macOS.zip](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.5.1/CC-Switch-v0.5.1-macOS.zip) | Universal binary (Intel + Apple Silicon) |
-| **Linux** | [CC-Switch-v0.5.1-Linux.AppImage](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.5.1/CC-Switch-v0.5.1-Linux.AppImage) | AppImage (universal) |
-| | [CC-Switch-v0.5.1-Linux.deb](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.5.1/CC-Switch-v0.5.1-Linux.deb) | Debian/Ubuntu package |
+| **Windows** | [CC-Switch-v0.5.2-Windows.msi](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.5.2/CC-Switch-v0.5.2-Windows.msi) | Installer (recommended) |
+| | [CC-Switch-v0.5.2-Windows-Portable.zip](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.5.2/CC-Switch-v0.5.2-Windows-Portable.zip) | Portable (no install) |
+| **macOS** | [CC-Switch-v0.5.2-macOS.zip](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.5.2/CC-Switch-v0.5.2-macOS.zip) | Universal binary (Intel + Apple Silicon) |
+| **Linux** | [CC-Switch-v0.5.2-Linux.AppImage](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.5.2/CC-Switch-v0.5.2-Linux.AppImage) | AppImage (universal) |
+| | [CC-Switch-v0.5.2-Linux.deb](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.5.2/CC-Switch-v0.5.2-Linux.deb) | Debian/Ubuntu package |
 
 **macOS Note**: If you see "damaged" warning, run: `xattr -cr "/Applications/CC Switch.app"`
 
@@ -199,7 +196,7 @@ This script will:
 **Advanced options**:
 ```bash
 # Install specific version
-VERSION=v0.5.1 curl -fsSL https://...install.sh | bash
+VERSION=v0.5.2 curl -fsSL https://...install.sh | bash
 
 # Skip checksum verification
 NO_CHECKSUM=1 curl -fsSL https://...install.sh | bash
@@ -309,7 +306,7 @@ pnpm test
 
 ## Changelog
 
-See [CHANGELOG.md](CHANGELOG.md) — Current version: **v0.5.1**
+See [CHANGELOG.md](CHANGELOG.md) — Current version: **v0.5.2**
 
 ---
 

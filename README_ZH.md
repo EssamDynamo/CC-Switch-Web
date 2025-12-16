@@ -28,24 +28,21 @@
 
 ---
 
-## v0.5.1 更新内容
-
-- 修复了 14 个 bug，覆盖错误处理、状态管理、闭包陷阱等问题
-- 增强 API 请求的健壮性，加入超时与重试机制
-- 改进 Safari 隐私模式等边缘环境的兼容性
-
----
-
-## v0.5.1 更新内容
+## v0.5.2 更新内容
 
 ### 🐛 Bug 修复
-- 修复 14 个问题，涵盖错误处理、状态管理和闭包相关缺陷
+- 修复 Web 模式下 `crypto.randomUUID` 在非安全上下文（HTTP）中不可用的问题
+- 修复 Web 模式下 `process.env` 在浏览器中不可用导致的错误
+- 修复 Web 开发模式下登录认证流程（Basic Auth + CSRF Token）
+- 修复 Skills API 因远程仓库获取超时导致的 AbortError
+- 修复 ComposioHQ/awesome-claude-skills 仓库分支名配置（main → master）
 
-### 🔁 稳定性
-- 为 API 请求增加超时与重试，提升整体鲁棒性
-
-### 🌐 兼容性
-- 在 Safari 隐私模式等边缘环境下表现更稳健
+### ⚡ 改进
+- Skills API 现在返回警告信息，远程仓库获取失败时仍显示本地技能
+- 增加 Skills 仓库下载超时时间（HTTP: 120s，总超时: 180s）
+- 增加前端 API 请求超时时间（30s → 180s）
+- 添加 Web 登录对话框，支持手动输入密码认证
+- 添加 CSRF Token API 端点 `GET /api/system/csrf-token`
 
 ---
 
@@ -75,8 +72,8 @@
 
 | 架构 | 下载链接 |
 |------|----------|
-| **Linux x86_64** | [cc-switch-server-linux-x86_64](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.5.1/cc-switch-server-linux-x86_64) |
-| **Linux aarch64** | [cc-switch-server-linux-aarch64](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.5.1/cc-switch-server-linux-aarch64) |
+| **Linux x86_64** | [cc-switch-server-linux-x86_64](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.5.2/cc-switch-server-linux-x86_64) |
+| **Linux aarch64** | [cc-switch-server-linux-aarch64](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.5.2/cc-switch-server-linux-aarch64) |
 
 **一键部署**：
 ```bash
@@ -173,11 +170,11 @@ HOST=0.0.0.0 PORT=3000 ./target/release/examples/server
 
 | 平台 | 下载链接 | 说明 |
 |------|----------|------|
-| **Windows** | [CC-Switch-v0.5.1-Windows.msi](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.5.1/CC-Switch-v0.5.1-Windows.msi) | 安装版（推荐） |
-| | [CC-Switch-v0.5.1-Windows-Portable.zip](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.5.1/CC-Switch-v0.5.1-Windows-Portable.zip) | 绿色版（免安装） |
-| **macOS** | [CC-Switch-v0.5.1-macOS.zip](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.5.1/CC-Switch-v0.5.1-macOS.zip) | 通用二进制（Intel + Apple Silicon） |
-| **Linux** | [CC-Switch-v0.5.1-Linux.AppImage](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.5.1/CC-Switch-v0.5.1-Linux.AppImage) | AppImage（通用） |
-| | [CC-Switch-v0.5.1-Linux.deb](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.5.1/CC-Switch-v0.5.1-Linux.deb) | Debian/Ubuntu 包 |
+| **Windows** | [CC-Switch-v0.5.2-Windows.msi](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.5.2/CC-Switch-v0.5.2-Windows.msi) | 安装版（推荐） |
+| | [CC-Switch-v0.5.2-Windows-Portable.zip](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.5.2/CC-Switch-v0.5.2-Windows-Portable.zip) | 绿色版（免安装） |
+| **macOS** | [CC-Switch-v0.5.2-macOS.zip](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.5.2/CC-Switch-v0.5.2-macOS.zip) | 通用二进制（Intel + Apple Silicon） |
+| **Linux** | [CC-Switch-v0.5.2-Linux.AppImage](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.5.2/CC-Switch-v0.5.2-Linux.AppImage) | AppImage（通用） |
+| | [CC-Switch-v0.5.2-Linux.deb](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.5.2/CC-Switch-v0.5.2-Linux.deb) | Debian/Ubuntu 包 |
 
 **macOS 提示**：如遇"已损坏"警告，在终端执行：`xattr -cr "/Applications/CC Switch.app"`
 
@@ -199,7 +196,7 @@ curl -fsSL https://raw.githubusercontent.com/Laliet/CC-Switch-Web/main/scripts/i
 **高级选项**：
 ```bash
 # 安装指定版本
-VERSION=v0.5.1 curl -fsSL https://...install.sh | bash
+VERSION=v0.5.2 curl -fsSL https://...install.sh | bash
 
 # 跳过校验
 NO_CHECKSUM=1 curl -fsSL https://...install.sh | bash
@@ -309,7 +306,7 @@ pnpm test
 
 ## 更新日志
 
-参见 [CHANGELOG.md](CHANGELOG.md) — 当前版本：**v0.5.1**
+参见 [CHANGELOG.md](CHANGELOG.md) — 当前版本：**v0.5.2**
 
 ---
 

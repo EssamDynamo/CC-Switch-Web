@@ -11,7 +11,7 @@ const importHealthCheck = async () => {
 };
 
 // Mock check_relay_pulse tauri command with custom payload
-const mockRelayPulseResponse = (payload: unknown) => {
+const mockRelayPulseResponse = (payload: Record<string, unknown> | null) => {
   server.use(
     http.post(`${TAURI_ENDPOINT}/check_relay_pulse`, () => HttpResponse.json(payload)),
   );

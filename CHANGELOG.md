@@ -5,6 +5,34 @@ All notable changes to CC Switch will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.4] - 2025-12-17
+
+### 🐛 Bug Fixes / Bug 修复
+
+**Critical / 严重：**
+- **彻底修复 `crypto.randomUUID` 在非安全上下文不可用** - 新增 `src/utils/uuid.ts`，实现三级降级策略：
+  1. 优先使用 `crypto.randomUUID()`（安全上下文：HTTPS / localhost）
+  2. 降级到 `crypto.getRandomValues()` + RFC 4122 v4 格式化（非安全上下文但有 Crypto API）
+  3. 最终降级到 `Math.random()` 模板（极老浏览器/特殊环境）
+- **修复添加供应商失败** - `mutations.ts`: 替换直接调用 `crypto.randomUUID()` 为安全的 `generateUUID()`
+
+### 🧪 Tests / 测试
+
+- 新增 `tests/utils/uuid.test.ts` - UUID 生成器完整测试
+  - 格式验证（8-4-4-4-12 hex，v4 版本位 + variant 位）
+  - 唯一性测试（1000 个 UUID 无重复）
+  - `crypto.randomUUID` 不可用时降级测试
+  - `crypto.getRandomValues` 不可用时降级测试
+- 测试数量：142 → 146（+4）
+
+### 📁 Changed Files / 变更文件
+
+- `src/utils/uuid.ts` (新增) - 安全的 UUID 生成器，三级降级策略
+- `src/lib/query/mutations.ts` - 导入并使用 `generateUUID()`
+- `tests/utils/uuid.test.ts` (新增) - UUID 生成器单元测试
+
+---
+
 ## [0.5.3] - 2025-12-16
 
 ### 🔒 Security / 安全修复

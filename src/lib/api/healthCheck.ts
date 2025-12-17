@@ -4,7 +4,7 @@
  */
 
 import type { AppId } from "./types";
-import { isWeb } from "./adapter";
+import { invoke, isWeb } from "./adapter";
 
 const RELAY_PULSE_API = "/api/health/status";
 const CACHE_TTL = 60 * 1000; // 1 分钟缓存
@@ -139,32 +139,38 @@ export async function fetchAllHealthStatus(): Promise<
   }
 
   try {
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), HEALTHCHECK_TIMEOUT_MS);
+    let data: RelayPulseResponse;
+    if (!isWeb()) {
+      // GUI 模式：通过 Tauri 命令代理请求 Relay-Pulse（无需 Authorization header）
+      data = await invoke<RelayPulseResponse>("check_relay_pulse");
+    } else {
+      // Web 模式：通过内置 web-server 代理路由访问（支持 Basic Auth）
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), HEALTHCHECK_TIMEOUT_MS);
 
-    let response: Response;
-    try {
-      const headers: Record<string, string> = { Accept: "application/json" };
-      if (isWeb()) {
+      let response: Response;
+      try {
+        const headers: Record<string, string> = { Accept: "application/json" };
         const storedAuth = getStoredWebCredentials();
         if (storedAuth) {
           headers.Authorization = `Basic ${storedAuth}`;
         }
+        response = await fetch(RELAY_PULSE_API, {
+          headers,
+          signal: controller.signal,
+        });
+      } finally {
+        clearTimeout(timer);
       }
-      response = await fetch(RELAY_PULSE_API, {
-        headers,
-        signal: controller.signal,
-      });
-    } finally {
-      clearTimeout(timer);
+
+      if (!response.ok) {
+        console.warn(`[HealthCheck] API returned ${response.status}`);
+        return healthCache; // 返回旧缓存
+      }
+
+      data = await response.json();
     }
 
-    if (!response.ok) {
-      console.warn(`[HealthCheck] API returned ${response.status}`);
-      return healthCache; // 返回旧缓存
-    }
-
-    const data: RelayPulseResponse = await response.json();
     lastFetchTime = now;
 
     // 更新缓存

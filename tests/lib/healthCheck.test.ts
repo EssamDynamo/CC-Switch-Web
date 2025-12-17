@@ -1,17 +1,21 @@
 import { describe, expect, it, vi } from "vitest";
+import { http, HttpResponse } from "msw";
 import type { ProviderHealth } from "@/lib/api/healthCheck";
+import { server } from "../msw/server";
+
+const TAURI_ENDPOINT = "http://tauri.local";
 
 const importHealthCheck = async () => {
   vi.resetModules();
   return import("@/lib/api/healthCheck");
 };
 
-const mockFetchResponse = (payload: unknown) =>
-  vi.spyOn(globalThis, "fetch").mockResolvedValue({
-    ok: true,
-    status: 200,
-    json: async () => payload,
-  } as any);
+// Mock check_relay_pulse tauri command with custom payload
+const mockRelayPulseResponse = (payload: unknown) => {
+  server.use(
+    http.post(`${TAURI_ENDPOINT}/check_relay_pulse`, () => HttpResponse.json(payload)),
+  );
+};
 
 describe("healthCheck API module", () => {
   it("statusToHealth converts numeric status to health enum", async () => {
@@ -54,12 +58,11 @@ describe("healthCheck API module", () => {
       ],
     };
 
-    const fetchMock = mockFetchResponse(payload);
+    mockRelayPulseResponse(payload);
     const { fetchAllHealthStatus } = await importHealthCheck();
 
     const firstResult = await fetchAllHealthStatus();
 
-    expect(fetchMock).toHaveBeenCalledTimes(1);
     expect(firstResult.get("88code/cc")).toEqual<ProviderHealth>({
       isHealthy: true,
       status: "available",
@@ -77,9 +80,6 @@ describe("healthCheck API module", () => {
 
     const secondResult = await fetchAllHealthStatus();
     expect(secondResult).toBe(firstResult);
-    expect(fetchMock).toHaveBeenCalledTimes(1);
-
-    fetchMock.mockRestore();
   });
 
   it("checkProviderHealth returns provider health or fallback when missing", async () => {
@@ -97,7 +97,7 @@ describe("healthCheck API module", () => {
       ],
     };
 
-    const fetchMock = mockFetchResponse(payload);
+    mockRelayPulseResponse(payload);
     const { checkProviderHealth } = await importHealthCheck();
 
     const existing = await checkProviderHealth("duckcoding", "cx");
@@ -113,9 +113,6 @@ describe("healthCheck API module", () => {
     expect(missing.status).toBe("unknown");
     expect(missing.isHealthy).toBe(false);
     expect(missing.latency).toBe(0);
-
-    expect(fetchMock).toHaveBeenCalledTimes(1);
-    fetchMock.mockRestore();
   });
 
   it("appIdToService maps app ids to services", async () => {
@@ -194,7 +191,7 @@ describe("healthCheck API module", () => {
       ],
     };
 
-    const fetchMock = mockFetchResponse(payload);
+    mockRelayPulseResponse(payload);
     const { fetchAllHealthStatus } = await importHealthCheck();
 
     const result = await fetchAllHealthStatus();
@@ -204,7 +201,5 @@ describe("healthCheck API module", () => {
     expect(health?.isHealthy).toBe(false);
     expect(health?.availability).toBe(0);
     expect(health?.latency).toBe(500);
-
-    fetchMock.mockRestore();
   });
 });

@@ -265,6 +265,39 @@ export const handlers = [
     success({ success: true }),
   ),
 
+  // check_relay_pulse: GUI 模式下的健康检查代理
+  http.post(`${TAURI_ENDPOINT}/check_relay_pulse`, () =>
+    HttpResponse.json({
+      meta: { period: "24h", count: 3 },
+      data: [
+        {
+          provider: "88code",
+          provider_url: "https://88code.com",
+          service: "cc",
+          category: "commercial",
+          current_status: { status: 1, latency: 1500, timestamp: Date.now() / 1000 },
+          timeline: [{ availability: 95 }, { availability: 98 }],
+        },
+        {
+          provider: "duckcoding",
+          provider_url: "https://duckcoding.com",
+          service: "cc",
+          category: "commercial",
+          current_status: { status: 2, latency: 3000, timestamp: Date.now() / 1000 },
+          timeline: [{ availability: 85 }],
+        },
+        {
+          provider: "packycode",
+          provider_url: "https://packyapi.com",
+          service: "cc",
+          category: "commercial",
+          current_status: { status: 0, latency: 0, timestamp: Date.now() / 1000 },
+          timeline: [{ availability: 20 }],
+        },
+      ],
+    }),
+  ),
+
   http.get("https://relaypulse.top/api/status", () =>
     HttpResponse.json({
       meta: { period: "24h", count: 3 },

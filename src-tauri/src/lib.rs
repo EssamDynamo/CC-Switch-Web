@@ -694,6 +694,7 @@ pub fn run() {
             commands::save_settings,
             commands::restart_app,
             commands::check_for_updates,
+            commands::check_relay_pulse,
             commands::is_portable_mode,
             commands::get_claude_plugin_status,
             commands::read_claude_plugin_config,

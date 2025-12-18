@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { settingsApi } from "@/lib/api";
 import { syncCurrentProvidersLiveSafe } from "@/utils/postChangeSync";
-import { isWeb } from "@/lib/api/adapter";
+import { isWeb, WEB_AUTH_STORAGE_KEY } from "@/lib/api/adapter";
 
 export type ImportStatus =
   | "idle"
@@ -206,7 +206,7 @@ export function useImportExport(
         const headers: Record<string, string> = { Accept: "application/json" };
         try {
           const storedAuth = window.sessionStorage?.getItem(
-            "cc-switch-web-auth",
+            WEB_AUTH_STORAGE_KEY,
           );
           if (storedAuth) {
             headers.Authorization = `Basic ${storedAuth}`;

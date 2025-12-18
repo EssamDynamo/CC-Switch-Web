@@ -10,8 +10,11 @@ interface Endpoint {
 }
 
 const API_BASE = "/api";
-const WEB_AUTH_STORAGE_KEY = "cc-switch-web-auth";
-const WEB_CSRF_STORAGE_KEY = "cc-switch-csrf-token";
+
+// Storage keys - exported for use across modules
+export const WEB_AUTH_STORAGE_KEY = "cc-switch-web-auth";
+export const WEB_CSRF_STORAGE_KEY = "cc-switch-csrf-token";
+
 const getEnvNumber = (value: unknown, fallback: number) => {
   const parsed = Number(value);
   return Number.isFinite(parsed) ? parsed : fallback;
@@ -97,7 +100,11 @@ async function fetchWithTimeout(
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-function base64EncodeUtf8(value: string): string {
+/**
+ * Base64 encode a UTF-8 string, with fallbacks for different environments.
+ * Exported for reuse across modules.
+ */
+export function base64EncodeUtf8(value: string): string {
   if (typeof window !== "undefined" && typeof window.btoa === "function") {
     const bytes = new TextEncoder().encode(value);
     let binary = "";
@@ -150,6 +157,7 @@ export function clearWebCredentials() {
   if (typeof window === "undefined") return;
   try {
     window.sessionStorage?.removeItem(WEB_AUTH_STORAGE_KEY);
+    window.sessionStorage?.removeItem(WEB_CSRF_STORAGE_KEY);
   } catch {
     // ignore
   }
@@ -510,12 +518,20 @@ export function commandToEndpoint(
         url: `${API_BASE}/config/export`,
         body: { filePath: requireArg(args, "filePath", cmd) },
       };
-    case "import_config_from_file":
+    case "import_config_from_file": {
+      const body: Record<string, string> = {
+        filePath: requireArg(args, "filePath", cmd),
+      };
+      // Web 模式下需要传递文件内容，因为浏览器无法访问服务器文件系统
+      if (args.content && typeof args.content === "string") {
+        body.content = args.content;
+      }
       return {
         method: "POST",
         url: `${API_BASE}/config/import`,
-        body: { filePath: requireArg(args, "filePath", cmd) },
+        body,
       };
+    }
     case "sync_current_providers_live":
       return { method: "POST", url: `${API_BASE}/providers/sync-current` };
     case "open_external":

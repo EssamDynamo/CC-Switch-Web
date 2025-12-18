@@ -4,12 +4,11 @@
  */
 
 import type { AppId } from "./types";
-import { invoke, isWeb } from "./adapter";
+import { invoke, isWeb, WEB_AUTH_STORAGE_KEY } from "./adapter";
 
 const RELAY_PULSE_API = "/api/health/status";
 const CACHE_TTL = 60 * 1000; // 1 分钟缓存
 const HEALTHCHECK_TIMEOUT_MS = 10_000;
-const WEB_AUTH_STORAGE_KEY = "cc-switch-web-auth";
 
 /** 健康状态枚举 */
 export type HealthStatus = "available" | "degraded" | "unavailable" | "unknown";

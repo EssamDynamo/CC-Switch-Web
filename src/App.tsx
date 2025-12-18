@@ -15,7 +15,7 @@ import { checkAllEnvConflicts, checkEnvConflicts } from "@/lib/api/env";
 import { useProviderActions } from "@/hooks/useProviderActions";
 import { useHealthCheck } from "@/hooks/useHealthCheck";
 import { extractErrorMessage } from "@/utils/errorUtils";
-import { clearWebCredentials, isWeb } from "@/lib/api/adapter";
+import { clearWebCredentials, isWeb, WEB_AUTH_STORAGE_KEY } from "@/lib/api/adapter";
 import { AppSwitcher } from "@/components/AppSwitcher";
 import { ProviderList } from "@/components/providers/ProviderList";
 import { AddProviderDialog } from "@/components/providers/AddProviderDialog";
@@ -45,8 +45,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
-
-const WEB_AUTH_STORAGE_KEY = "cc-switch-web-auth";
 
 async function validateWebCredentials(encoded: string): Promise<boolean> {
   const response = await fetch("/api/settings", {

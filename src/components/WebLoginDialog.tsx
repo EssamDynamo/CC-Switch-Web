@@ -10,16 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { setWebCredentials } from "@/lib/api/adapter";
-
-function base64EncodeUtf8(value: string): string {
-  const bytes = new TextEncoder().encode(value);
-  let binary = "";
-  for (const byte of bytes) {
-    binary += String.fromCharCode(byte);
-  }
-  return window.btoa(binary);
-}
+import { setWebCredentials, WEB_CSRF_STORAGE_KEY, base64EncodeUtf8 } from "@/lib/api/adapter";
 
 export interface WebLoginDialogProps {
   open: boolean;
@@ -78,11 +69,11 @@ export function WebLoginDialog({ open, onLoginSuccess }: WebLoginDialogProps) {
             };
             if (data?.csrfToken) {
               window.sessionStorage?.setItem(
-                "cc-switch-csrf-token",
+                WEB_CSRF_STORAGE_KEY,
                 data.csrfToken,
               );
             } else {
-              window.sessionStorage?.removeItem("cc-switch-csrf-token");
+              window.sessionStorage?.removeItem(WEB_CSRF_STORAGE_KEY);
             }
           }
         } catch {

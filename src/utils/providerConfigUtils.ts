@@ -3,15 +3,41 @@
 import type { TemplateValueConfig } from "../config/claudeProviderPresets";
 import { normalizeQuotes } from "@/utils/textNormalization";
 
+/**
+ * Keys that can be abused for prototype pollution when performing recursive
+ * reads/writes into plain objects (e.g. `target["__proto__"]` resolves to
+ * `Object.prototype` via the legacy accessor).
+ *
+ * Security note: these keys MUST be skipped at every recursion level in deep
+ * operations that consume untrusted input (JSON snippets / user-provided config).
+ */
+export const DANGEROUS_KEYS = ["__proto__", "constructor", "prototype"] as const;
+
+/**
+ * Returns true if `key` is a known prototype pollution gadget key.
+ */
+export const isDangerousKey = (key: string): boolean => {
+  return (DANGEROUS_KEYS as readonly string[]).includes(key);
+};
+
 const isPlainObject = (value: unknown): value is Record<string, any> => {
   return Object.prototype.toString.call(value) === "[object Object]";
 };
 
+/**
+ * Deep merge helper used for provider config snippets.
+ *
+ * Security fix: skip prototype pollution gadget keys (`__proto__`, `constructor`,
+ * `prototype`) at every recursion level so that merges cannot write into
+ * `Object.prototype` (or otherwise alter object prototypes).
+ */
 const deepMerge = (
   target: Record<string, any>,
   source: Record<string, any>,
 ): Record<string, any> => {
   Object.entries(source).forEach(([key, value]) => {
+    if (isDangerousKey(key)) return;
+
     if (isPlainObject(value)) {
       if (!isPlainObject(target[key])) {
         target[key] = {};
@@ -25,12 +51,20 @@ const deepMerge = (
   return target;
 };
 
+/**
+ * Deep remove helper used for provider config snippets.
+ *
+ * Security fix: skip prototype pollution gadget keys (`__proto__`, `constructor`,
+ * `prototype`) at every recursion level. This prevents walking into inherited
+ * properties via the prototype chain and avoids mutating `Object.prototype`.
+ */
 const deepRemove = (
   target: Record<string, any>,
   source: Record<string, any>,
 ) => {
   Object.entries(source).forEach(([key, value]) => {
-    if (!(key in target)) return;
+    if (isDangerousKey(key)) return;
+    if (!Object.prototype.hasOwnProperty.call(target, key)) return;
 
     if (isPlainObject(value) && isPlainObject(target[key])) {
       // 只移除完全匹配的嵌套属性
@@ -68,9 +102,10 @@ const deepClone = <T>(obj: T): T => {
   if (obj instanceof Array) return obj.map((item) => deepClone(item)) as T;
   if (obj instanceof Object) {
     const clonedObj = {} as T;
-    for (const key in obj) {
-      if (obj.hasOwnProperty(key)) {
-        clonedObj[key] = deepClone(obj[key]);
+    for (const key of Object.keys(obj as any)) {
+      if (isDangerousKey(key)) continue;
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        (clonedObj as any)[key] = deepClone((obj as any)[key]);
       }
     }
     return clonedObj;

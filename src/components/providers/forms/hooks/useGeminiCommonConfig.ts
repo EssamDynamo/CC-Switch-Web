@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { configApi } from "@/lib/api";
+import { isDangerousKey } from "@/utils/providerConfigUtils";
 
 const LEGACY_STORAGE_KEY = "cc-switch:gemini-common-config-snippet";
 const DEFAULT_GEMINI_COMMON_CONFIG_SNIPPET = `{
@@ -17,6 +18,7 @@ interface UseGeminiCommonConfigProps {
 
 /**
  * 深度合并两个对象（用于合并通用配置）
+ * Security: 跳过原型污染危险键
  */
 function deepMerge(target: any, source: any): any {
   if (typeof target !== "object" || target === null) {
@@ -31,6 +33,7 @@ function deepMerge(target: any, source: any): any {
 
   const result = { ...target };
   for (const key of Object.keys(source)) {
+    if (isDangerousKey(key)) continue;
     if (typeof source[key] === "object" && !Array.isArray(source[key])) {
       result[key] = deepMerge(result[key], source[key]);
     } else {
@@ -42,6 +45,7 @@ function deepMerge(target: any, source: any): any {
 
 /**
  * 从配置中移除通用配置片段（递归比较）
+ * Security: 跳过原型污染危险键
  */
 function removeCommonConfig(config: any, commonConfig: any): any {
   if (typeof config !== "object" || config === null) {
@@ -53,6 +57,7 @@ function removeCommonConfig(config: any, commonConfig: any): any {
 
   const result = { ...config };
   for (const key of Object.keys(commonConfig)) {
+    if (isDangerousKey(key)) continue;
     if (result[key] === undefined) continue;
 
     // 如果值完全相等，删除该键

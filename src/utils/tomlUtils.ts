@@ -1,5 +1,6 @@
 import { parse as parseToml, stringify as stringifyToml } from "smol-toml";
 import { normalizeTomlText } from "@/utils/textNormalization";
+import { isDangerousKey } from "@/utils/providerConfigUtils";
 import { McpServerSpec } from "../types";
 
 /**
@@ -139,8 +140,9 @@ function normalizeServerConfig(config: any): McpServerSpec {
     }
 
     // 保留所有未知字段（如 timeout_ms 等扩展字段）
+    // Security: 跳过原型污染危险键
     for (const key of Object.keys(config)) {
-      if (!knownFields.has(key)) {
+      if (!knownFields.has(key) && !isDangerousKey(key)) {
         server[key] = config[key];
       }
     }
@@ -169,8 +171,9 @@ function normalizeServerConfig(config: any): McpServerSpec {
     }
 
     // 保留所有未知字段
+    // Security: 跳过原型污染危险键
     for (const key of Object.keys(config)) {
-      if (!knownFields.has(key)) {
+      if (!knownFields.has(key) && !isDangerousKey(key)) {
         server[key] = config[key];
       }
     }

